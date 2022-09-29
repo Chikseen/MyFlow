@@ -43,12 +43,9 @@ export default defineNuxtConfig({
     scss: ["./assets/scss/*.scss"],
   },
 
-  server: {
-    port: 8080,
-    /* host: 'myip',  */
-  },
-
-  env: {
-    VUE_APP_API: process.env.VUE_APP_API,
+  runtimeConfig: {
+    public: {
+      GITHUB_CLIENT_ID: "",
+    },
   },
 });
