@@ -7,6 +7,14 @@ database
 bin
 obj
 web-client
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+
+.nuxt
+static
 
 Files
 
