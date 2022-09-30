@@ -5,7 +5,6 @@ public static class DatabaseService
 {
     private static string name = "";
     private static string location = "";
-    private static NpgsqlConnection con;
     private static String postgresHost = "";
     private static String postgresPort = "";
     private static String postgresUser = "";
@@ -74,17 +73,17 @@ public static class DatabaseService
             try
             {
                 con.Open();
-                var sql = "CREATE TABLE IF NOT EXISTS alluser (id SERIAL PRIMARY KEY, token VARCHAR(255) NOT NULL, created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
+                var sql = "CREATE TABLE IF NOT EXISTS alluser (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, authid VARCHAR(255) NOT NULL, logoURL VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
                 Console.WriteLine(sql);
                 NpgsqlCommand command = new NpgsqlCommand(sql, con);
                 NpgsqlDataReader dr = command.ExecuteReader();
             }
             catch (System.Exception e)
             {
-                Console.WriteLine("Error While creating Keys Table");
+                Console.WriteLine("Error While creating alluser Table");
                 Console.WriteLine(e);
                 con.Close();
-                return "error_creating_table_keys";
+                return "error_creating_alluser";
             }
             con.Close();
         }
