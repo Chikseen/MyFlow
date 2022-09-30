@@ -46,6 +46,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       GITHUB_CLIENT_ID: "",
+      API_BASE: "",
     },
   },
 });

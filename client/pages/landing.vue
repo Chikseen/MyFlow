@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import api from '~~/apiService'
+
 export default {
     data() {
         return {

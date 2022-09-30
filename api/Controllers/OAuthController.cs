@@ -9,6 +9,7 @@ public class OAuthContoller : ControllerBase
     private String githubClientID;
     private String githubClientSecret;
     private readonly HttpClient client;
+    private UserHandler userHandler;
 
     public OAuthContoller()
     {
@@ -16,6 +17,7 @@ public class OAuthContoller : ControllerBase
         client = new HttpClient();
         githubClientID = Environment.GetEnvironmentVariable("GITHUB_CLIENT_ID")!;
         githubClientSecret = Environment.GetEnvironmentVariable("GITHUB_CLIENT_SECRET")!;
+        userHandler = new UserHandler();
     }
 
     [HttpGet("github")]
@@ -30,6 +32,17 @@ public class OAuthContoller : ControllerBase
         var content = new FormUrlEncodedContent(values);
         var response = await client.PostAsync("https://github.com/login/oauth/access_token", content);
         var responseString = await response.Content.ReadAsStringAsync();
+        var queryValues = responseString.Split('&').Select(q => q.Split('='))
+                           .ToDictionary(k => k[0], v => v[1]);
+
+        userHandler.saveUser(queryValues["access_token"]);
+
         return Ok(responseString);
+    }
+
+    [HttpGet("test")]
+    public ActionResult test()
+    {
+        return Ok();
     }
 }
