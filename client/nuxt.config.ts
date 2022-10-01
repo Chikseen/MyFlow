@@ -19,8 +19,18 @@ export default defineNuxtConfig({
 
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [],
+  modules: [
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", "acceptHMRUpdate"],
+      },
+    ],
+  ],
+
+  imports: {
+    dirs: ["stores"],
+  },
 
   vite: {
     css: {

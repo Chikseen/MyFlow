@@ -1,8 +1,8 @@
 const apiService = {
-  async get(adress) {
+  async getUser(adress) {
     const config = useRuntimeConfig();
-    console.log(config);
     const request = await fetch(`${config.API_BASE}/${adress}`, {
+      credentials: "include",
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
@@ -11,7 +11,7 @@ const apiService = {
       mode: "cors",
       redirect: "follow",
     });
-    return await request.json();
+    return request;
   },
 };
 

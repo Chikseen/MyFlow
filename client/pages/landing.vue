@@ -1,11 +1,15 @@
 <template>
     <div>
-        <a :href="githubAuth">Github Login</a>
+        <p>isLoginOk: {{ isLoginOk }}</p>
+        <p>isUserChecked: {{ isUserChecked }}</p>
+        <div v-if="!isLoginOk && !isUserChecked">
+            <a :href="githubAuth">Github Login</a>
+        </div>
     </div>
 </template>
 
 <script>
-import api from '~~/apiService'
+import { useUsersStore } from '~/store/users'
 
 export default {
     data() {
@@ -16,12 +20,21 @@ export default {
     computed: {
         githubAuth() {
             return `https://github.com/login/oauth/authorize?client_id=${this.githubClientID}`
+        },
+        isLoginOk() {
+            const usersStore = useUsersStore();
+            return usersStore.isLoginOk;
+        },
+        isUserChecked() {
+            const usersStore = useUsersStore();
+            return usersStore.isUserChecked;
         }
     },
+    methods: {},
     mounted() {
-        const config = useRuntimeConfig()
-        this.githubClientID = config.GITHUB_CLIENT_ID
+        const config = useRuntimeConfig();
+        this.githubClientID = config.GITHUB_CLIENT_ID;
     },
-}
-</script>
 
+}
+</script>  

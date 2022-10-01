@@ -13,7 +13,7 @@ public class GithubAuth
     }
 
 
-    public async Task<Object> userLogin(String code)
+    public async Task<String> userLogin(String code)
     {
         HttpClient accessTokenClient = new HttpClient();
 
@@ -30,12 +30,12 @@ public class GithubAuth
                            .ToDictionary(k => k[0], v => v[1]);
         String access_token = queryValues["access_token"];
 
-        getUserDataFromAT(access_token);
+        await getUserDataFromAT(access_token);
 
-        return new { access_token = access_token };
+        return access_token;
     }
 
-    private async void getUserDataFromAT(String access_token)
+    public async Task<User> getUserDataFromAT(String access_token)
     {
         UserHandler userHandler = new UserHandler();
         HttpClient userDataClient = new HttpClient();
@@ -52,5 +52,7 @@ public class GithubAuth
         dynamic json = JsonConvert.DeserializeObject<object>(userDataString)!;
 
         userHandler.saveUser(json["login"].ToString(), json["id"].ToString(), json["avatar_url"].ToString());
+
+        return new User(json["login"].ToString(), json["id"].ToString());
     }
 }
