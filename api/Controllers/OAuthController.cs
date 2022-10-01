@@ -20,24 +20,20 @@ public class OAuthContoller : ControllerBase
     [HttpGet("checkuser")]
     public async Task<ActionResult> checkuser()
     {
-        String access_token = HttpContext.Request.Cookies["access_token"]!;
-        String auth_provider = HttpContext.Request.Cookies["auth_provider"]!;
+        UserCookies coockies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
 
-        Console.WriteLine("access_token", access_token);
-        Console.WriteLine("auth_provider", auth_provider);
-
-        if (((access_token != null) && (auth_provider != null)) && (access_token.Length > 0 && auth_provider.Length > 0))
+        if (((coockies.access_token != null) && (coockies.auth_provider != null)) && (coockies.access_token.Length > 0 && coockies.auth_provider.Length > 0))
         {
-            switch (auth_provider)
+            switch (coockies.auth_provider)
             {
                 case "0":
                     {
                         GithubAuth auth = new GithubAuth();
-                        User user = await auth.getUserDataFromAT(access_token);
-                        String sql = $"SELECT authid FROM alluser WHERE authid = '{user.authid}'";
+                        User user = await auth.getUserDataFromAT(coockies.access_token);
+                        String sql = $"SELECT name, authid FROM alluser WHERE authid = '{user.authid}'";
                         List<List<String>> data = DatabaseService.query(sql);
-                        Console.WriteLine(data[0][0]);
-                        return Ok();
+                        Console.WriteLine(data[0][0].ToString());
+                        return Ok(new User(data[0][0].ToString(), data[0][1].ToString()));
                     }
                 default: return Unauthorized();
             }

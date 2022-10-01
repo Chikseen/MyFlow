@@ -17,9 +17,14 @@ export default {
   async mounted() {
     const usersStore = useUsersStore();
     usersStore.setIsUserChecked(true);
-    
+
     const loginState = await api.getUser("auth/checkuser");
-    usersStore.setIsLoginOk(loginState.status === 200);
+    if (loginState.status === 200) {
+      usersStore.setIsLoginOk(true);
+      const userData = await loginState.json();
+      console.log(userData)
+      usersStore.setUserData(userData);
+    }
     usersStore.setIsUserChecked(false);
   }
 }

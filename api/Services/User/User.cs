@@ -10,3 +10,15 @@ public class User
         this.authid = authid;
     }
 }
+
+public class UserCookies
+{
+    public String access_token { get; set; }
+    public String auth_provider { get; set; }
+
+    public UserCookies(String access_token, String auth_provider)
+    {
+        this.access_token = access_token;
+        this.auth_provider = auth_provider;
+    }
+}

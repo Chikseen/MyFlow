@@ -5,6 +5,9 @@
         <div v-if="!isLoginOk && !isUserChecked">
             <a :href="githubAuth">Github Login</a>
         </div>
+        <div v-else>
+            <p>Welcome back {{ userData?.name }}</p>
+        </div>
     </div>
 </template>
 
@@ -28,6 +31,10 @@ export default {
         isUserChecked() {
             const usersStore = useUsersStore();
             return usersStore.isUserChecked;
+        },
+        userData() {
+            const usersStore = useUsersStore();
+            return usersStore.userData;
         }
     },
     methods: {},
