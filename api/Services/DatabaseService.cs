@@ -73,7 +73,7 @@ public static class DatabaseService
             try
             {
                 con.Open();
-                var sql = "CREATE TABLE IF NOT EXISTS alluser (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, authid VARCHAR(255) NOT NULL, logoURL VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
+                var sql = "CREATE TABLE IF NOT EXISTS alluser (authid VARCHAR(255) PRIMARY KEY, name VARCHAR(255) NOT NULL, logoURL VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
                 Console.WriteLine(sql);
                 NpgsqlCommand command = new NpgsqlCommand(sql, con);
                 NpgsqlDataReader dr = command.ExecuteReader();
