@@ -86,6 +86,24 @@ public static class DatabaseService
                 return "error_creating_alluser";
             }
             con.Close();
+
+            // __________ COUNTERTABLE __________
+            try
+            {
+                con.Open();
+                var sql = "CREATE TABLE IF NOT EXISTS counter (id serial, user_id VARCHAR(255),name VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES alluser(authid) ON DELETE CASCADE);";
+                Console.WriteLine(sql);
+                NpgsqlCommand command = new NpgsqlCommand(sql, con);
+                NpgsqlDataReader dr = command.ExecuteReader();
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("Error While creating counter Table");
+                Console.WriteLine(e);
+                con.Close();
+                return "error_creating_counter";
+            }
+            con.Close();
         }
         return "success";
     }

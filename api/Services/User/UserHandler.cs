@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 
-public class UserHandler : ControllerBase
+public class UserHandler
 {
     public void saveUser(String name, String id, String logoURL)
     {
@@ -9,7 +8,7 @@ public class UserHandler : ControllerBase
         //return "addedImages";
     }
 
-    public async Task<ActionResult> checkUser(UserCookies cookies)
+    public async Task<User> checkUser(UserCookies cookies)
     {
         if (((cookies.access_token != null) && (cookies.auth_provider != null)) && (cookies.access_token.Length > 0 && cookies.auth_provider.Length > 0))
         {
@@ -21,14 +20,16 @@ public class UserHandler : ControllerBase
                         User user = await auth.getUserDataFromAT(cookies.access_token);
                         String sql = $"SELECT name, authid FROM alluser WHERE authid = '{user.authid}'";
                         List<List<String>> data = DatabaseService.query(sql);
-                        return Ok(new User(data[0][0].ToString(), data[0][1].ToString()));
-                    }                                                                                                                      
-                default: return Unauthorized();
+                        return new User(data[0][0].ToString(), data[0][1].ToString());
+                    }
+                default:
+                    return null!;
             }
         }
         else
         {
-            return Unauthorized();
+            return null!;
         }
+
     }
 }

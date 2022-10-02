@@ -24,6 +24,10 @@ public class OAuthContoller : ControllerBase
     {
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
         UserHandler user = new UserHandler();
-        return await user.checkUser(cookies);
+        User userData = await user.checkUser(cookies);
+        if (userData != null)
+            return Ok(userData);
+        else
+            return Unauthorized();
     }
 }
