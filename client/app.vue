@@ -29,3 +29,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Sofia", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+</style>

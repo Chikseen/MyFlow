@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <h1>Hello Mobile</h1>
+  <div class="mobileWrapper">
+    <UserHeader />
     <Landing />
   </div>
 </template>
 
 <script>
 import Landing from '~/pages/landing.vue';
+import UserHeader from '~~/components/user/UserHeader.vue';
 
 export default {
   components: {
-    Landing
+    Landing,
+    UserHeader
   },
   data() {
     return {}
@@ -20,5 +22,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+.mobileWrapper {
+  position: relative;
+}
 </style>
