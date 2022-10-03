@@ -5,10 +5,14 @@
 </template>
 
 <script>
+import api from '~~/apiService';
+
 export default {
     methods: {
-        createCounter() {
-            console.log("hi")
+        async createCounter() {
+            console.log("hi");
+            const res = await api.post("numbers", { name: "hi" });
+            console.log(res);
         }
     },
 }

@@ -1,17 +1,15 @@
 <template>
   <div class="mobileWrapper">
     <UserHeader />
-    <Landing />
+    <NuxtPage />
   </div>
 </template>
 
 <script>
-import Landing from '~/pages/landing.vue';
 import UserHeader from '~~/components/user/UserHeader.vue';
 
 export default {
   components: {
-    Landing,
     UserHeader
   },
   data() {
