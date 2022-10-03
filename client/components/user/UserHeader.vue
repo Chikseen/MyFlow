@@ -53,6 +53,7 @@ export default {
             document.cookie = "auth_provider= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
             const usersStore = useUsersStore();
             usersStore.$reset();
+            this.$router.push('/landing')
         },
         ...mapActions(useUsersStore, {
             setIsUserChecked: 'setIsUserChecked'

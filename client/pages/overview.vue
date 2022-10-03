@@ -1,6 +1,11 @@
 <template>
     <div>
-        <button @click="createCounter">CREATE</button>
+        <label for="">Create new Counter</label>
+        <div>
+            <label for="">Name:</label>
+            <input type="text" v-model="createCoutnerText">
+            <button @click="createCounter">CREATE</button>
+        </div>
     </div>
 </template>
 
@@ -8,12 +13,24 @@
 import api from '~~/apiService';
 
 export default {
+    data() {
+        return {
+            createCoutnerText: ""
+        }
+    },
     methods: {
         async createCounter() {
-            console.log("hi");
-            const res = await api.post("numbers", { name: "hi" });
+            const res = await api.post("numbers", { name: this.createCoutnerText });
             console.log(res);
         }
     },
 }
 </script>
+    
+<!-- found no way for options api :thinking: -->
+<script setup>
+definePageMeta({
+    middleware: 'auth'
+})
+</script> 
+    
