@@ -1,3 +1,5 @@
+import { useUsersStore } from "~/store/users";
+
 const apiService = {
   async getUser(adress) {
     const config = useRuntimeConfig();
@@ -25,7 +27,7 @@ const apiService = {
       mode: "cors",
       redirect: "follow",
     });
-    return await request.json();
+    return await this.checkAuth(request);
   },
   async post(adress, payload) {
     const config = useRuntimeConfig();
@@ -40,7 +42,16 @@ const apiService = {
       redirect: "follow",
       body: JSON.stringify(payload),
     });
-    return await request.json();
+    return await this.checkAuth(request);
+  },
+
+  async checkAuth(res) {
+    if (res.status >= 400) {
+      const usersStore = useUsersStore();
+      usersStore.$reset();
+      return null;
+    }
+    return await res.json();
   },
 };
 

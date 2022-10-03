@@ -13,27 +13,36 @@ public class CounterContoller : ControllerBase
         counterHandler = new CounterHandler();
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult> getCounter(int id)
+    {
+        UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
+        User userData = await user.checkUser(cookies);
+        if (userData != null)
+            return Ok(counterHandler.getCounter(userData, id));
+        else
+            return Unauthorized();
+    }
+
     [HttpGet()]
     public async Task<ActionResult> getAllCounter()
     {
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
         User userData = await user.checkUser(cookies);
         if (userData != null)
-            return Ok(user);
+            return Ok(counterHandler.getAllCounter(userData));
         else
             return Unauthorized();
     }
 
     [HttpPost()]
-    public async Task<ActionResult> createNewCounter(CreateCounter createCounter)
+    public async Task<ActionResult<Counter>> createNewCounter(CreateCounter createCounter)
     {
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
         User userData = await user.checkUser(cookies);
-
         if (userData != null)
         {
-            counterHandler.createNewCounter(userData, createCounter);
-            return Ok(user);
+            return Ok(counterHandler.createNewCounter(userData, createCounter));
         }
         else
             return Unauthorized();

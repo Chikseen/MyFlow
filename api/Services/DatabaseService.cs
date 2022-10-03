@@ -32,7 +32,7 @@ public static class DatabaseService
             if (con.State != System.Data.ConnectionState.Open)
                 con.Open();
 
-            //Console.WriteLine(sql); -- Debug
+            Console.WriteLine(sql); //-- Debug
             NpgsqlCommand command = new NpgsqlCommand(sql, con);
             NpgsqlDataReader dr = command.ExecuteReader();
 
@@ -90,7 +90,7 @@ public static class DatabaseService
             try
             {
                 con.Open();
-                var sql = "CREATE TABLE IF NOT EXISTS counter (id serial, user_id VARCHAR(255),name VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES alluser(authid) ON DELETE CASCADE);";
+                var sql = "CREATE TABLE IF NOT EXISTS counter (id serial, user_id VARCHAR(255),name VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES alluser(authid) ON DELETE CASCADE);";
                 Console.WriteLine(sql);
                 NpgsqlCommand command = new NpgsqlCommand(sql, con);
                 NpgsqlDataReader dr = command.ExecuteReader();
