@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 import api from '~~/apiService'
 
@@ -14,18 +15,25 @@ export default {
   components: {
     Default
   },
+  methods: {
+    ...mapActions(useUsersStore, {
+      setIsUserChecked: 'setIsUserChecked'
+    }),
+  },
   async mounted() {
     const usersStore = useUsersStore();
-    usersStore.setIsUserChecked(true);
+    this.setIsUserChecked(true);
 
     const loginState = await api.getUser("auth/checkuser");
     if (loginState.status === 200) {
-      usersStore.setIsLoginOk(true);
       const userData = await loginState.json();
       console.log(userData)
-      usersStore.setUserData(userData);
+      usersStore.$patch({
+        userData: userData,
+        isLoginOk: true
+      })
     }
-    usersStore.setIsUserChecked(false);
+    this.setIsUserChecked(false);
   }
 }
 </script>

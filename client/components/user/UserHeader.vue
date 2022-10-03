@@ -18,7 +18,7 @@
                 <div v-else>
                     <p>Sign in with: </p>
                     <ul>
-                        <li @click="setUserCheckState"> <a :href="githubAuth">Github Login</a> </li>
+                        <li @click="setIsUserChecked(true)"> <a :href="githubAuth">Github Login</a> </li>
                     </ul>
                 </div>
             </div>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 export default {
@@ -40,31 +41,22 @@ export default {
         githubAuth() {
             return `https://github.com/login/oauth/authorize?client_id=${this.githubClientID}`
         },
-        isLoginOk() {
-            const usersStore = useUsersStore();
-            return usersStore.isLoginOk;
-        },
-        isUserChecked() {
-            const usersStore = useUsersStore();
-            return usersStore.isUserChecked;
-        },
-        userData() {
-            const usersStore = useUsersStore();
-            return usersStore.userData;
-        }
+        ...mapState(useUsersStore, {
+            isLoginOk: 'isLoginOk',
+            isUserChecked: 'isUserChecked',
+            userData: 'userData',
+        })
     },
     methods: {
-        setUserCheckState() {
-            const usersStore = useUsersStore();
-            usersStore.setIsUserChecked(true);
-        },
         logout() {
             document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
             document.cookie = "auth_provider= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
             const usersStore = useUsersStore();
-            usersStore.setIsUserChecked(false);
-            usersStore.setIsLoginOk(false);
-        }
+            usersStore.$reset();
+        },
+        ...mapActions(useUsersStore, {
+            setIsUserChecked: 'setIsUserChecked'
+        }),
     },
     mounted() {
         const config = useRuntimeConfig();

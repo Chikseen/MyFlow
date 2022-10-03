@@ -32,7 +32,7 @@ public static class DatabaseService
             if (con.State != System.Data.ConnectionState.Open)
                 con.Open();
 
-            Console.WriteLine(sql);
+            //Console.WriteLine(sql); -- Debug
             NpgsqlCommand command = new NpgsqlCommand(sql, con);
             NpgsqlDataReader dr = command.ExecuteReader();
 
@@ -66,7 +66,6 @@ public static class DatabaseService
     public static String dbInit()
     {
         Console.WriteLine("DB Init");
-        Console.WriteLine(conectionString);
         using (NpgsqlConnection con = new NpgsqlConnection(conectionString))
         {
             // __________ USERTABLE __________

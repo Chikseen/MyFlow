@@ -5,13 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 [Route("numbers")]
 public class CounterContoller : ControllerBase
 {
+    private UserHandler user;
+    private CounterHandler counterHandler;
+    public CounterContoller()
+    {
+        user = new UserHandler();
+        counterHandler = new CounterHandler();
+    }
+
     [HttpGet()]
     public async Task<ActionResult> getAllCounter()
     {
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
-        UserHandler user = new UserHandler();
         User userData = await user.checkUser(cookies);
-        if (userData.name != null && userData.authid != null)
+        if (userData != null)
             return Ok(user);
         else
             return Unauthorized();
@@ -21,10 +28,7 @@ public class CounterContoller : ControllerBase
     public async Task<ActionResult> createNewCounter(CreateCounter createCounter)
     {
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
-        UserHandler user = new UserHandler();
         User userData = await user.checkUser(cookies);
-
-        CounterHandler counterHandler = new CounterHandler();
 
         if (userData != null)
         {

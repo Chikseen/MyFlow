@@ -47,8 +47,7 @@ public class GithubAuth
 
         var userDataResponse = await userDataClient.GetAsync("/user");
         var userDataString = await userDataResponse.Content.ReadAsStringAsync();
-
-        Console.WriteLine(userDataString);
+        
         dynamic json = JsonConvert.DeserializeObject<object>(userDataString)!;
 
         userHandler.saveUser(json["login"].ToString(), json["id"].ToString(), json["avatar_url"].ToString());

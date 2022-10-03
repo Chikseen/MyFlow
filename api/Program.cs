@@ -33,7 +33,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-DatabaseService.dbInit();
+String result = "";
+do
+{
+    result = DatabaseService.dbInit();
+    if (result != "success")
+    {
+        Console.WriteLine("The Database may not be ready to take connections");
+        Console.WriteLine("Let me try again");
+    }
+} while (result != "success");
 
 //app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
