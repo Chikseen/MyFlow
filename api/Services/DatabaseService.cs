@@ -72,7 +72,11 @@ public static class DatabaseService
             try
             {
                 con.Open();
-                var sql = "CREATE TABLE IF NOT EXISTS alluser (authid VARCHAR(255) PRIMARY KEY, name VARCHAR(255) NOT NULL, logoURL VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
+                var sql = @"CREATE TABLE IF NOT EXISTS 
+                                alluser (authid VARCHAR(255) PRIMARY KEY, 
+                                         name VARCHAR(255) NOT NULL, 
+                                         logoURL VARCHAR(255), 
+                                         created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);";
                 Console.WriteLine(sql);
                 NpgsqlCommand command = new NpgsqlCommand(sql, con);
                 NpgsqlDataReader dr = command.ExecuteReader();
@@ -90,7 +94,38 @@ public static class DatabaseService
             try
             {
                 con.Open();
-                var sql = "CREATE TABLE IF NOT EXISTS counter (id serial, user_id VARCHAR(255),name VARCHAR(255), created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES alluser(authid) ON DELETE CASCADE);";
+                var sql = @"CREATE TABLE IF NOT EXISTS 
+                                counter (id serial, 
+                                        user_id VARCHAR(255), 
+                                        name VARCHAR(255), 
+                                        created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+                                        PRIMARY KEY (id), 
+                                        FOREIGN KEY (user_id) REFERENCES alluser (authid) ON DELETE CASCADE);";
+                Console.WriteLine(sql);
+                NpgsqlCommand command = new NpgsqlCommand(sql, con);
+                NpgsqlDataReader dr = command.ExecuteReader();
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("Error While creating counter Table");
+                Console.WriteLine(e);
+                con.Close();
+                return "error_creating_counter";
+            }
+            con.Close();
+
+            // __________ NUMBERSTABLE __________
+            try
+            {
+                con.Open();
+                var sql = @"CREATE TABLE IF NOT EXISTS 
+                                numbers (id serial, 
+                                        counter_id serial, 
+                                        value VARCHAR(255), 
+                                        date TIMESTAMP, 
+                                        created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+                                        PRIMARY KEY (id), 
+                                        FOREIGN KEY (counter_id) REFERENCES counter (id) ON DELETE CASCADE);";
                 Console.WriteLine(sql);
                 NpgsqlCommand command = new NpgsqlCommand(sql, con);
                 NpgsqlDataReader dr = command.ExecuteReader();

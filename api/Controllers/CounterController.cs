@@ -19,7 +19,7 @@ public class CounterContoller : ControllerBase
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
         User userData = await user.checkUser(cookies);
         if (userData != null)
-            return Ok(counterHandler.getCounter(userData, id));
+            return Ok(counterHandler.getCounter(id));
         else
             return Unauthorized();
     }
@@ -43,6 +43,19 @@ public class CounterContoller : ControllerBase
         if (userData != null)
         {
             return Ok(counterHandler.createNewCounter(userData, createCounter));
+        }
+        else
+            return Unauthorized();
+    }
+
+    [HttpPost("{id}")]
+    public async Task<ActionResult> createEntry(CreateEntry entry)
+    {
+        UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
+        User userData = await user.checkUser(cookies);
+        if (userData != null)
+        {
+            return Ok(counterHandler.saveNumbers(userData, entry));
         }
         else
             return Unauthorized();

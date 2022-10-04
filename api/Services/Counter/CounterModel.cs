@@ -19,3 +19,24 @@ public class CreateCounter
 {
     public String? name { get; set; }
 }
+
+public class Entry
+{
+    public int? value { get; set; }
+    public DateTime? date { get; set; }
+    public DateTime? createdDate { get; set; }
+
+    public Entry(int value, DateTime date, DateTime createdDate)
+    {
+        this.value = value;
+        this.date = date;
+        this.createdDate = createdDate;
+    }
+}
+
+public class CreateEntry
+{
+    public int? id { get; set; }
+    public int? value { get; set; }
+    public String? date { get; set; }
+}

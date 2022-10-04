@@ -6,8 +6,8 @@
             <input type="text" v-model="createCoutnerText">
             <button @click="createCounter">CREATE</button>
         </div>
-        <p v-for="(counter, index) in allCounter" :key="index" @click="loadDetailed(counter)">
-            {{counter}}
+        <p class="TEMP_CLICKABLE" v-for="(counter, index) in allCounter" :key="index" @click="loadDetailed(counter)">
+            {{counter.name}}
         </p>
 
     </div>
@@ -50,9 +50,9 @@ export default {
 </script>
     
 <!-- found no way for options api :thinking: -->
-<script setup>
+<!-- <script setup>
 definePageMeta({
     middleware: 'auth'
 })
-</script> 
+</script>  -->
     

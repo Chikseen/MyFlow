@@ -49,4 +49,9 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.TEMP_CLICKABLE {
+  background-color: aquamarine;
+  cursor: pointer;
+}
 </style>
