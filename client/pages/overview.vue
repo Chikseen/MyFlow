@@ -6,7 +6,10 @@
             <input type="text" v-model="createCoutnerText">
             <button @click="createCounter">CREATE</button>
         </div>
-        <p>{{allCounter}}</p>
+        <p v-for="(counter, index) in allCounter" :key="index" @click="loadDetailed(counter)">
+            {{counter}}
+        </p>
+
     </div>
 </template>
 
@@ -21,6 +24,9 @@ export default {
         }
     },
     methods: {
+        loadDetailed(counter) {
+            this.$router.push(`detailed/${counter.id}`)
+        },
         async createCounter() {
             const res = await api.post("numbers", { name: this.createCoutnerText });
             if (res === null)
