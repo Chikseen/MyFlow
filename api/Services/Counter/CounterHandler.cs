@@ -31,4 +31,18 @@ public class CounterHandler
 
         return allCounter;
     }
+
+    public Boolean deleteCounter(User user, int id)
+    {
+        try
+        {
+            String getIdSql = @$"DELETE FROM counter WHERE id='{id}' AND user_id = '{user.authid}';";
+            List<List<String>> data = DatabaseService.query(getIdSql);
+            return true;
+        }
+        catch (System.Exception)
+        {
+            return false;
+        }
+    }
 }

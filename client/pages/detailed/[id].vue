@@ -15,7 +15,7 @@
             <button @click="saveNewEntry">Add</button>
         </div>
         <div v-for="(item, index) in numbers" :key="index">
-            <p>{{item}}</p>
+            <p class="TEMP_CLICKABLE" @click="removeNumber(item.id)">{{item}}</p>
         </div>
     </div>
 </template>
@@ -53,7 +53,14 @@ export default {
                 this.$router.push('/landing')
             console.log(res);
             this.numbers.push(res);
-        }
+        },
+        async removeNumber(id) {
+            const res = await api.delete(`numbers/${this.$route.params.id}`, { id: id });
+            if (res === null)
+                this.$router.push('/landing')
+            if (res.status === 200)
+                this.numbers = this.numbers.filter((numbers) => numbers.id !== id)
+        },
     },
     computed: {
         today() {

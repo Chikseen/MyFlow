@@ -6,10 +6,10 @@
             <input type="text" v-model="createCoutnerText">
             <button @click="createCounter">CREATE</button>
         </div>
-        <p class="TEMP_CLICKABLE" v-for="(counter, index) in allCounter" :key="index" @click="loadDetailed(counter)">
-            {{counter.name}}
-        </p>
-
+        <div class="temp123" v-for="(counter, index) in allCounter" :key="index">
+            <p @click="loadDetailed(counter)" class="TEMP_CLICKABLE"> {{counter}} </p>
+            <p @click="removeCounter(counter.id)" class="TEMP_CLICKABLE">X</p>
+        </div>
     </div>
 </template>
 
@@ -39,9 +39,15 @@ export default {
             const res = await api.get("numbers");
             if (res === null)
                 this.$router.push('/landing')
-            console.log(res);
             this.allCounter = res;
-        }
+        },
+        async removeCounter(id) {
+            const res = await api.delete("numbers", { id: id });
+            if (res === null)
+                this.$router.push('/landing')
+            if (res.status === 200)
+                this.allCounter = this.allCounter.filter((counter) => counter.id !== id)
+        },
     },
     mounted() {
         this.getAllCounter();
@@ -49,6 +55,14 @@ export default {
 }
 </script>
     
+<style lang="scss">
+.temp123 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+</style>
+
 <!-- found no way for options api :thinking: -->
 <!-- <script setup>
 definePageMeta({

@@ -19,3 +19,8 @@ public class CreateCounter
 {
     public String? name { get; set; }
 }
+
+public class DeleteCounter
+{
+    public int id { get; set; }
+}

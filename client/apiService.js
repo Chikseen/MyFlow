@@ -44,6 +44,21 @@ const apiService = {
     });
     return await this.checkAuth(request);
   },
+  async delete(adress, payload) {
+    const config = useRuntimeConfig();
+    const request = await fetch(`${config.API_BASE}/${adress}`, {
+      credentials: "include",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+      mode: "cors",
+      redirect: "follow",
+      body: JSON.stringify(payload),
+    });
+    return await this.checkAuth(request);
+  },
 
   async checkAuth(res) {
     if (res.status >= 400) {
@@ -51,7 +66,11 @@ const apiService = {
       usersStore.$reset();
       return null;
     }
-    return await res.json();
+    try {
+      return await res.json();
+    } catch (e) {
+      return res;
+    }
   },
 };
 

@@ -34,4 +34,22 @@ public class NumberHandler
         }
         else return null!;
     }
+
+    public Boolean deleteNumbers(DeleteNumbers deleteNumbers, int id)
+    {
+        if (userHandler.hasUserAccessforCounter(deleteNumbers.user!, id))
+        {
+            try
+            {
+                String sql = $"DELETE FROM numbers WHERE id='{deleteNumbers.id}' AND counter_id = '{id}';";
+                DatabaseService.query(sql);
+                return true;
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+        }
+        return false;
+    }
 }

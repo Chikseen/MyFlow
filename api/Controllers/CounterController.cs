@@ -62,4 +62,41 @@ public class CounterContoller : ControllerBase
         else
             return Unauthorized();
     }
+
+    [HttpDelete()]
+    public async Task<ActionResult<Counter>> deleteCounter(DeleteCounter counter)
+    {
+        UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
+        User userData = await user.checkUser(cookies);
+        if (userData != null)
+        {
+            if (counterHandler.deleteCounter(userData, counter.id))
+                return Ok();
+            else
+                return NotFound();
+        }
+        else
+            return Unauthorized();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Counter>> deleteNumber(DeleteCounter counter, int id)
+    {
+        UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
+        User userData = await user.checkUser(cookies);
+        DeleteNumbers deleteNumbers = new DeleteNumbers(userData, counter.id);
+        if (userData != null)
+        {
+            if (numberHandler.deleteNumbers(deleteNumbers, id))
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        else
+            return Unauthorized();
+    }
 }
