@@ -30,6 +30,15 @@ public class UserHandler
         {
             return null!;
         }
+    }
 
+    public Boolean hasUserAccessforCounter(User user, int id)
+    {
+        String sql = $"SELECT id, user_id FROM counter WHERE user_id = '{user.authid}' AND id = '{id}'";
+        List<List<String>> data = DatabaseService.query(sql);
+        if (data.Count > 0)
+            return true;
+        else
+            return false;
     }
 }

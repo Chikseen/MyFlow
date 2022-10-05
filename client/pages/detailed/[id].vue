@@ -52,7 +52,7 @@ export default {
             if (res === null)
                 this.$router.push('/landing')
             console.log(res);
-            this.numbers = res;
+            this.numbers.push(res);
         }
     },
     computed: {
