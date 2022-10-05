@@ -27,7 +27,6 @@ export default {
     const loginState = await api.getUser("auth/checkuser");
     if (loginState.status === 200) {
       const userData = await loginState.json();
-      console.log(userData)
       usersStore.$patch({
         userData: userData,
         isLoginOk: true

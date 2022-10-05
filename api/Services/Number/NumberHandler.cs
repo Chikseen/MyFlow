@@ -27,10 +27,10 @@ public class NumberHandler
     {
         if (userHandler.hasUserAccessforCounter(user, entry.id ?? default(int)))
         {
-            String sql = $"INSERT INTO numbers(counter_id, value, date) VALUES ('{entry.id}', '{entry.value}', '{entry.date}');";
+            String sql = $"INSERT INTO numbers(counter_id, value, date) VALUES ('{entry.id}', '{entry.value}', '{entry.date}') RETURNING id, value, date, created;";
             List<List<String>> data = DatabaseService.query(sql);
 
-            return new Entry(entry.id ?? default(int), entry.value ?? default(int), DateTime.Parse(entry.date!), DateTime.Now); // Send time with timezone -> fix later
+            return new Entry(Int32.Parse(data[0][0]), Int32.Parse(data[0][1]), DateTime.Parse(data[0][2]), DateTime.Parse(data[0][3]));
         }
         else return null!;
     }

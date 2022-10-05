@@ -1,7 +1,6 @@
 <template>
     <div>
         <button @click="$router.push('/overview')">Overview</button>
-        <p>{{ numbers }}</p>
         <div class="detailed_newData">
             <label for="">Add new Data: </label>
             <span>
@@ -13,6 +12,25 @@
                 <input type="date" :value="newDate || today" @change="setNewDate">
             </span>
             <button @click="saveNewEntry">Add</button>
+        </div>
+        <div>
+            DATA DISPLAY:
+            <span>
+                <label for="">values</label>
+                <p>{{values}}</p>
+            </span>
+            <span>
+                <label for="">aremeticCenter</label>
+                <p>{{aremeticCenter}}</p>
+            </span>
+            <span>
+                <label for="">Days min:</label>
+                <p>{{minDay}}</p>
+                <label for="">Days max:</label>
+                <p>{{maxDay}}</p>
+                <label for="">Days diff:</label>
+                <p>{{daysDiff}}</p>
+            </span>
         </div>
         <div v-for="(item, index) in numbers" :key="index">
             <p class="TEMP_CLICKABLE" @click="removeNumber(item.id)">{{item}}</p>
@@ -31,16 +49,55 @@ export default {
             newDate: null,
         }
     },
+    computed: {
+        today() {
+            return new Date().toISOString().split('T')[0]
+        },
+        /* START HERE */
+        values() {
+            if (this.numbers)
+                return this.numbers.map((number) => number = number.value)
+            return null
+        },
+        dates() {
+            if (this.numbers)
+                return this.numbers.map((number) => new Date(number = number.date).getTime())
+            return null
+        },
+        minDay() {
+            if (this.dates)
+                return new Date(Math.min(...this.dates)).toISOString();
+            return null
+        },
+        maxDay() {
+            if (this.dates)
+                return new Date(Math.max(...this.dates)).toISOString();
+            return null
+        },
+        daysDiff() {
+            return Math.round((new Date(this.maxDay).getTime() - new Date(this.minDay).getTime()) / (1000 * 3600 * 24));
+        },
+        aremeticCenter() {
+            if (this.values) {
+                let center = 0;
+                this.values.forEach(value => {
+                    center += value
+                });
+                return center / this.values.length;
+            }
+            return null
+        },
+        /* START HERE */
+        // this should be ONE obj
+    },
     methods: {
         setNewDate(e) {
-            console.log(e.target.value)
             this.newDate = e.target.value
         },
         async getDetailedNumbers() {
             const res = await api.get(`numbers/${this.$route.params.id}`);
             if (res === null)
                 this.$router.push('/landing')
-            console.log(res);
             this.numbers = res;
         },
         async saveNewEntry() {
@@ -51,7 +108,6 @@ export default {
             });
             if (res === null)
                 this.$router.push('/landing')
-            console.log(res);
             this.numbers.push(res);
         },
         async removeNumber(id) {
@@ -61,11 +117,6 @@ export default {
             if (res.status === 200)
                 this.numbers = this.numbers.filter((numbers) => numbers.id !== id)
         },
-    },
-    computed: {
-        today() {
-            return new Date().toISOString().split('T')[0]
-        }
     },
     mounted() {
         this.getDetailedNumbers();
