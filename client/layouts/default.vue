@@ -1,10 +1,6 @@
 <template>
-  <div>
-    <div>
       <MobileHeader v-if="isMobile" />
       <DesktopHeader v-else />
-    </div>
-  </div>
 </template>
 
 <script>

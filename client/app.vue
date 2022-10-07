@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Default />
-  </div>
+  <Default />
 </template>
 
 <script>
@@ -49,8 +47,23 @@ body {
   padding: 0;
 }
 
-.TEMP_CLICKABLE {
-  background-color: aquamarine;
-  cursor: pointer;
+h1,
+h2 {
+  margin: 0;
+}
+
+input {
+  width: 90%;
+  padding: 0;
+  border: 0.1px rgb(135, 135, 135) solid;
+  border-radius: 25px;
+}
+
+button {
+  width: 90%;
+  padding: 0;
+  border-radius: 25px;
+  border: none;
+  background-color: none;
 }
 </style>
