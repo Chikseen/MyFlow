@@ -5,7 +5,7 @@
 <script>
 import { mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
-import api from '~~/apiService'
+import api from '~~/assets/helper/apiService'
 
 import Default from "~/layouts/default.vue"
 
@@ -42,7 +42,7 @@ html {
 }
 
 body {
-  font-family: "Sofia", sans-serif;
+  font-family: "Merienda", Helvetica, Arial;
   margin: 0;
   padding: 0;
 }

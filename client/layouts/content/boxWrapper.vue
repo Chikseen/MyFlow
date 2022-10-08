@@ -14,5 +14,6 @@
     grid-auto-rows: calc(50% - 7.5px);
     gap: 15px;
     margin: 0 15px;
+    padding-top: 15px;
 }
 </style>

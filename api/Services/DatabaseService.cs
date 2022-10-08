@@ -122,7 +122,8 @@ public static class DatabaseService
                                 numbers (id serial, 
                                         counter_id serial, 
                                         value VARCHAR(255), 
-                                        date TIMESTAMP, 
+                                        date TIMESTAMP,
+                                        unit VARCHAR(255) DEFAULT '-',
                                         created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
                                         PRIMARY KEY (id), 
                                         FOREIGN KEY (counter_id) REFERENCES counter (id) ON DELETE CASCADE);";

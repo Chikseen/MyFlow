@@ -21,7 +21,7 @@ public class CounterContoller : ControllerBase
         UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
         User userData = await user.checkUser(cookies);
         if (userData != null)
-            return Ok(numberHandler.getCounter(userData, id));
+            return Ok(numberHandler.getNumber(userData, id));
         else
             return Unauthorized();
     }

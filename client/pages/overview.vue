@@ -12,9 +12,11 @@
                         <boxSlot :data="item" @click="loadDetailed(item)" />
                     </div>
                     <boxSlot>
-                        <h2>New Counter</h2>
-                        <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
-                        <button @click="createCounter">+</button>
+                        <div class="box_misc">
+                            <p>New Counter</p>
+                            <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
+                            <button @click="createCounter">+</button>
+                        </div>
                     </boxSlot>
                 </boxWrapper>
             </div>
@@ -23,7 +25,7 @@
 </template>
 
 <script>
-import api from '~~/apiService';
+import api from '~~/assets/helper/apiService';
 
 import boxSlot from '~~/layouts/content/boxSlot.vue';
 import boxWrapper from '~~/layouts/content/boxWrapper.vue';
@@ -80,16 +82,16 @@ export default {
 .overview {
     position: relative;
     height: 100vh;
+    padding: 0 15px;
 
     &_content {
         height: 100%;
-        padding: 15px 0;
         scroll-snap-align: start;
 
         &_limiter {
             height: 80%;
             overflow: auto;
-            scroll-snap-type: y mandatory;
+            scroll-snap-type: y proximity;
         }
 
         &_filter {
