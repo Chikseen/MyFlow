@@ -40,7 +40,10 @@ do
     if (result != "success")
     {
         Console.WriteLine("The Database may not be ready to take connections");
-        Console.WriteLine("Let me try again");
+        Console.WriteLine("Let me try again just givma sec");
+        var end = DateTimeOffset.UtcNow.Add(TimeSpan.FromSeconds(1));
+        while (DateTimeOffset.UtcNow < end)
+        {}
     }
 } while (result != "success");
 
