@@ -33,7 +33,7 @@ public class CounterHandler
             Console.WriteLine("6: " + numbers);
             if (numbers.Count > 0)
             {
-                Console.WriteLine("6.0: " + numbers);
+                Console.WriteLine("6.0: " + numbers[0][2]);
                 String[] datearr = numbers[0][2].Split(" ")[0].Split("."); // Need to transform due how input is handelt by postgres
                 Console.WriteLine("6.1: " + datearr);
                 Console.WriteLine("datearr[2]: " + datearr[2]);
