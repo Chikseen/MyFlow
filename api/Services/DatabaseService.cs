@@ -21,7 +21,7 @@ public static class DatabaseService
         postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD")!;
         postgresDatabase = Environment.GetEnvironmentVariable("POSTGRES_DATABASE")!;
         conectionString = $"Host={postgresHost};Port={postgresPort};Username={postgresUser};Password={postgresPassword};Database={postgresDatabase}";
-        //conectionString = $"Host=localhost;Port={postgresPort};Username={postgresUser};Password={postgresPassword};Database={postgresDatabase}";
+        conectionString = $"Host=localhost;Port={postgresPort};Username={postgresUser};Password={postgresPassword};Database={postgresDatabase}";
     }
 
     public static List<List<String>> query(String sql)
@@ -66,6 +66,8 @@ public static class DatabaseService
     public static String dbInit()
     {
         Console.WriteLine("DB Init");
+        Console.WriteLine(conectionString);
+
         using (NpgsqlConnection con = new NpgsqlConnection(conectionString))
         {
             // __________ USERTABLE __________
