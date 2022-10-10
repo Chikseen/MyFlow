@@ -36,6 +36,9 @@ public class CounterHandler
                 Console.WriteLine("6.0: " + numbers);
                 String[] datearr = numbers[0][2].Split(" ")[0].Split("."); // Need to transform due how input is handelt by postgres
                 Console.WriteLine("6.1: " + datearr);
+                Console.WriteLine("datearr[2]: " + datearr[2]);
+                Console.WriteLine("datearr[1]: " + datearr[1]);
+                Console.WriteLine("datearr[0]: " + datearr[0]);
                 DateTime date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[1]), Int32.Parse(datearr[0]));
                 Console.WriteLine("6.2: " + date);
                 allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), Int32.Parse(numbers[0][1]), date, numbers[0][3]));
