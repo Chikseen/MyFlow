@@ -17,7 +17,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - ${API_PORT}:7080
+      - ${API_PORT}:7085
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}

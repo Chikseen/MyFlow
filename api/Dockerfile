@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 WORKDIR /app
-EXPOSE 7080
+EXPOSE 7085
 
-ENV ASPNETCORE_URLS=http://+:7080
+ENV ASPNETCORE_URLS=http://+:7085
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
