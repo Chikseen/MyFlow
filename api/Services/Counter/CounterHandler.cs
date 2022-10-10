@@ -19,16 +19,18 @@ public class CounterHandler
             WHERE user_id = '{user.authid}'
             ORDER BY id ASC;";
         List<List<String>> counter = DatabaseService.query(getCounter);
-        Console.WriteLine("1", counter);
+        Console.WriteLine("1: " + counter);
 
         List<Counter> allCounter = new List<Counter>();
-        Console.WriteLine("2", allCounter);
+        Console.WriteLine("2: " + allCounter);
         for (int i = 0; i < counter.Count; i++)
         {
-            Console.WriteLine("3", i);
-            Console.WriteLine("4", counter[i][0]);
+            Console.WriteLine("3: " + i);
+            Console.WriteLine("4: " + counter[i][0]);
             String getNumber = @$"SELECT counter_id, value, date, unit FROM numbers WHERE counter_id = '{counter[i][0]}' ORDER BY date DESC LIMIT 1;";
+            Console.WriteLine("5: ");
             List<List<String>> numbers = DatabaseService.query(getNumber);
+            Console.WriteLine("6: " + numbers);
             if (numbers.Count > 0)
             {
                 String[] datearr = numbers[0][2].Split(" ")[0].Split("."); // Need to transform due how input is handelt by postgres
