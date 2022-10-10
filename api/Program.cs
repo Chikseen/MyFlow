@@ -8,9 +8,8 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://localhost:8080", "https://drunc.net")
                             .AllowAnyMethod()
-                            .AllowAnyMethod()
-                            .WithExposedHeaders("content-disposition")
                             .AllowAnyHeader()
+                            .WithExposedHeaders("content-disposition")
                             .AllowCredentials()
                             .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
                       });
@@ -33,6 +32,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
+
 String result = "";
 do
 {
@@ -43,12 +44,11 @@ do
         Console.WriteLine("Let me try again just givma sec");
         var end = DateTimeOffset.UtcNow.Add(TimeSpan.FromSeconds(1));
         while (DateTimeOffset.UtcNow < end)
-        {}
+        { }
     }
 } while (result != "success");
 
 //app.UseHttpsRedirection();
-app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
