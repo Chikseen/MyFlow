@@ -73,7 +73,7 @@ export default {
     },
     mounted() {
         this.getAllCounter();
-        this.$refs.overviewContentLimiter.scrollTop = 40; // This sould be the height of the "Search and Filter" div
+        this.$refs.overviewContentLimiter.scrollTo({ top: 40, behavior: 'smooth' });
     },
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div :class="['box', showColor]">
+    <div :class="['box box-border', showColor]">
         <div v-if="data" class="box_counter">
             <p class="box_counter_name">{{data.name}}</p>
             <p class="box_counter_value">{{data.numbers.value}} {{data.numbers.unit}}</p>
@@ -49,8 +49,6 @@ export default {
     height: 100%;
     width: 100%;
     font-size: 0.8rem;
-    box-shadow: 0px 0px 7px #2e2e2e7a;
-    border-radius: 5px;
 
     &_counter {
         display: flex;

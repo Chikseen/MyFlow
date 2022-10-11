@@ -1,32 +1,39 @@
 <template>
-    <div>
+    <div class="detailed">
         <button @click="$router.push('/overview')">Overview</button>
-        <div class="detailed_newData">
-            <label for="">Add new Data: </label>
-            <span>
-                <label for="">Value: </label>
-                <input type="number" v-model="newValue">
-            </span>
-            <span>
-                <label for="">Date: </label>
-                <input type="date" :value="newDate || today" @change="setNewDate">
-            </span>
-            <button @click="saveNewEntry">Add</button>
-        </div>
-        <div>
-            DATA DISPLAY:
-            {{values}}
-        </div>
-        <div v-for="(item, index) in numbers" :key="index">
-            <p class="TEMP_CLICKABLE" @click="removeNumber(item.id)">{{item}}</p>
-        </div>
+        <BoxWrapper>
+            <div class="detailed_info box-border">CHART</div>
+            <div class="detailed_info detailed_info_table_limiter box-border" ref="detailTableContentLimiter">
+                <div class="detailed_info_table_add">
+                    <input type="number" v-model="newValue">
+                    <button @click="saveNewEntry">+</button>
+                    <input type="date" :value="newDate || today" @change="setNewDate">
+                </div>
+                <div class="detailed_info detailed_info_table">
+                    <div class="detailed_info_table_content" v-for="(number, index) in numbers" :key="index">
+                        <p>
+                            {{ number.value }}
+                            <span class="detailed_info_table_content_unit">{{ number.unit }}</span>
+                        </p>
+                        <p>{{ convertDateFormat(number.date) }}</p>
+                    </div>
+                </div>
+            </div>
+        </BoxWrapper>
     </div>
 </template>
 
 <script>
 import api from '~~/assets/helper/apiService';
+import dates from '~~/assets/helper/dates';
+
+import BoxWrapper from '~~/layouts/content/boxWrapper.vue';
 
 export default {
+    components: {
+        BoxWrapper
+    },
+    name: "detailed",
     data() {
         return {
             numbers: null,
@@ -36,11 +43,11 @@ export default {
     },
     computed: {
         today() {
-            return new Date().toISOString().split('T')[0]
+            return new Date().toISOString().split('T')[0];
         },
         values() {
-            let values = {}
-            return values
+            let values = {};
+            return values;
         }
         /* START HERE */
         /*    values() {
@@ -81,14 +88,21 @@ export default {
         // this should be ONE obj
     },
     methods: {
+        convertDateFormat(date) {
+            return dates.ISOstringToDDMMYYYY(date);
+        },
         setNewDate(e) {
-            this.newDate = e.target.value
+            this.newDate = e.target.value;
+        },
+        hideAddArea() {
+            this.$refs.detailTableContentLimiter.scrollTo({ top: 61, behavior: 'smooth' });
         },
         async getDetailedNumbers() {
             const res = await api.get(`numbers/${this.$route.params.id}`);
             if (res === null)
-                this.$router.push('/landing')
+                this.$router.push('/landing');
             this.numbers = res;
+            this.hideAddArea();
         },
         async saveNewEntry() {
             const dateToSend = new Date(this.newDate || this.today).toISOString()
@@ -99,29 +113,80 @@ export default {
                 unit: "kWh"
             });
             if (res === null)
-                this.$router.push('/landing')
+                this.$router.push('/landing');
             this.numbers.push(res);
+            this.hideAddArea();
+            this.newValue = "";
+            this.newDate = this.today;
         },
         async removeNumber(id) {
             const res = await api.delete(`numbers/${this.$route.params.id}`, { id: id });
             if (res === null)
-                this.$router.push('/landing')
+                this.$router.push('/landing');
             if (res.status === 200)
-                this.numbers = this.numbers.filter((numbers) => numbers.id !== id)
+                this.numbers = this.numbers.filter((numbers) => numbers.id !== id);
         },
     },
     mounted() {
         this.getDetailedNumbers();
+        this.hideAddArea();
     },
 }
 </script>
 
 <style lang="scss">
 .detailed {
-    &_newData {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+    padding: 0 15px;
+
+    &_info {
+        grid-column: span 2;
+        grid-row: span 2;
+
+        &_table {
+            padding: 0 20px;
+            min-height: calc(100% + 61px);
+            scroll-snap-align: start;
+
+            &_limiter {
+                overflow: auto;
+                scroll-snap-type: y proximity;
+            }
+
+            &_add {
+                padding: 0 20px;
+                scroll-snap-align: start;
+                display: grid;
+                grid-template-columns: 75% 25%;
+
+                input {
+                    margin: 5px;
+                    font-size: 1rem;
+                }
+
+                button {
+                    grid-row: span 2;
+                    border-radius: 7px;
+                    background-color: #ffffff00;
+                    font-size: 2rem;
+                }
+            }
+
+            &_content {
+                display: flex;
+                justify-content: space-between;
+
+                &_unit {
+                    font-size: 0.7rem;
+                    font-weight: lighter;
+                    color: #7d7d7d;
+                }
+
+                p {
+                    margin: 0;
+                    padding: 10px 0;
+                }
+            }
+        }
     }
 }
 </style>

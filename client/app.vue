@@ -66,4 +66,9 @@ button {
   border: none;
   background-color: none;
 }
+
+.box-border {
+  box-shadow: 0px 0px 7px #2e2e2e7a;
+  border-radius: 5px;
+}
 </style>
