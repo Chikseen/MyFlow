@@ -35,11 +35,15 @@ public class CounterHandler
                 String[] datearr;
                 DateTime date;
                 if (os == "w")
+                {
                     datearr = numbers[0][2].Split(" ")[0].Split(".");
+                    date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[1]), Int32.Parse(datearr[0]));
+                }
                 else
+                {
                     datearr = numbers[0][2].Split(" ")[0].Split("/");
-
-                date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[1]), Int32.Parse(datearr[0]));
+                    date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[0]), Int32.Parse(datearr[1]));
+                }
                 allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), Int32.Parse(numbers[0][1]), date, numbers[0][3]));
             }
             else
