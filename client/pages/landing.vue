@@ -21,6 +21,6 @@ export default {
 
 <style lang="scss">
     .landing {
-        height: 100vh;
+        height: 100%;
     }
 </style>

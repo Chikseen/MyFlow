@@ -36,17 +36,19 @@ export default {
 </script>
 
 <style lang="scss">
-html {
+html,
+body {
   margin: 0;
   padding: 0;
-  max-height: 100vh;
-}
-
-body {
+  height: 100%;
   font-family: "Merienda", Helvetica, Arial;
   margin: 0;
   padding: 0;
-  background-color: #262626ed;
+  background-color: #373737;
+}
+
+#__nuxt {
+  height: 100%;
 }
 
 h1,

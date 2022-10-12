@@ -2,13 +2,15 @@
     <div :class="['box box-border', showColor]">
         <div v-if="data" class="box_counter">
             <p class="box_counter_name">{{data.name}}</p>
-            <p class="box_counter_value">{{data.numbers.value}} {{data.numbers.unit}}</p>
-            <div class="box_counter_date">
+            <p v-if="data.numbers.value > 0" class="box_counter_value">{{data.numbers.value}} {{data.numbers.unit}}</p>
+            <div v-if="dayDiff < 9999" class="box_counter_date">
                 <p class="box_counter_date_text">Last Entry</p>
                 <span class="box_counter_date_detailed">
                     <p class="box_counter_date_detailed_text">{{dayDiff}} Days ago</p>
                 </span>
             </div>
+            <p v-if="!(data.numbers.value > 0)">
+                No Data</p>
         </div>
         <slot v-else></slot>
     </div>
@@ -54,7 +56,6 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        scroll-snap-align: start;
         padding: 20px;
         height: calc(100% - 40px);
 
@@ -96,10 +97,11 @@ export default {
 
     &_misc {
         padding: 20px;
+        height: calc(100% - 40px);
+        width: calc(100% - 40px);
         display: flex;
         justify-content: space-between;
         flex-direction: column;
-        height: calc(100% - 40px);
     }
 
     &_green {

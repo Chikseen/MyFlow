@@ -15,13 +15,13 @@
                             @click="removeCounter(item.id)">X</span>
                         <boxSlot :data="item" @click="loadDetailed(item)" />
                     </div>
-                    <boxSlot>
-                        <div class="box_misc">
+                    <div class="overview_content_box">
+                        <boxSlot class="box_misc">
                             <p>New Counter</p>
                             <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
                             <button @click="createCounter">+</button>
-                        </div>
-                    </boxSlot>
+                        </boxSlot>
+                    </div>
                 </boxWrapper>
             </div>
         </div>
@@ -30,7 +30,7 @@
 
 <script>
 import api from '~~/assets/helper/apiService';
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 import boxSlot from '~~/layouts/content/boxSlot.vue';
@@ -64,12 +64,7 @@ export default {
                 this.allCounter = [];
             this.createCoutnerText = "";
             this.allCounter.push(res);
-        },
-        async getAllCounter() {
-            const res = await api.get("numbers");
-            if (res === null)
-                this.$router.push('/landing')
-            this.allCounter = res;
+            this.setAllCounter(this.allCounter)
         },
         async removeCounter(id) {
             if (this.isEditMode) {
@@ -78,16 +73,21 @@ export default {
                     this.$router.push('/landing')
                 if (res.status === 200)
                     this.allCounter = this.allCounter.filter((counter) => counter.id !== id)
+                this.setAllCounter(this.allCounter)
             }
         },
+        ...mapActions(useUsersStore, {
+            setAllCounter: 'setAllCounter',
+        }),
     },
     computed: {
         ...mapState(useUsersStore, {
             isEditMode: 'isEditMode',
+            getAllCounterFromStore: 'getAllCounter',
         })
     },
-    mounted() {
-        this.getAllCounter();
+    async mounted() {
+        this.allCounter = await this.getAllCounterFromStore;
         this.$refs.overviewContentLimiter.scrollTo({ top: 40, behavior: 'smooth' });
     },
 }
@@ -96,22 +96,24 @@ export default {
 <style lang="scss">
 .overview {
     position: relative;
-    height: 100vh;
+    height: 100%;
     padding: 0 15px;
 
     &_content {
-        height: 100%;
-        scroll-snap-align: start;
+        height: calc(100% - 40px);
+        margin: 5px;
 
         &_limiter {
-            height: calc(100% - 97px);
-            z-index: 1;
+            z-index: 0;
+            height: calc(100% - 80px) !important;
             overflow: auto;
-            scroll-snap-type: y proximity;
+            scroll-snap-type: y mandatory;
         }
 
         &_box {
             position: relative;
+            scroll-snap-align: start;
+            padding: 5px;
 
             &_remove {
                 position: absolute;
@@ -142,7 +144,7 @@ export default {
             input {
                 width: 75%;
                 border: 0.1px rgb(135, 135, 135) solid;
-                font-size: 1.3rem;
+                font-size: 1.1rem;
             }
 
             button {

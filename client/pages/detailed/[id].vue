@@ -1,8 +1,11 @@
 <template>
     <div class="detailed">
-        <button @click="$router.push('/overview')">Overview</button>
-        <BoxWrapper>
-            <div class="detailed_info box-border">CHART</div>
+        <h3 @click="$router.push('/overview')">Overview > {{counterData?.name}}</h3>
+        <div class="detailed_info_wrapper">
+            <div class="detailed_info box-border">CHART
+                {{counterData}}
+
+            </div>
             <div class="detailed_info detailed_info_table_limiter box-border" ref="detailTableContentLimiter">
                 <div class="detailed_info_table_add">
                     <input type="number" v-model="newValue">
@@ -19,13 +22,15 @@
                     </div>
                 </div>
             </div>
-        </BoxWrapper>
+        </div>
     </div>
 </template>
 
 <script>
 import api from '~~/assets/helper/apiService';
 import dates from '~~/assets/helper/dates';
+import { mapState } from 'pinia'
+import { useUsersStore } from '~/store/users'
 
 import BoxWrapper from '~~/layouts/content/boxWrapper.vue';
 
@@ -48,7 +53,13 @@ export default {
         values() {
             let values = {};
             return values;
-        }
+        },
+        counterData() {
+            return this.allCounter?.filter(item => item.id == this.counterId)[0]
+        },
+        counterId() {
+            return this.$route.params.id
+        },
         /* START HERE */
         /*    values() {
                if (this.numbers)
@@ -86,6 +97,11 @@ export default {
         */
         /* START HERE */
         // this should be ONE obj
+        ...mapState(useUsersStore, {
+            isEditMode: 'isEditMode',
+            getAllCounterFromStore: 'getAllCounter',
+            allCounter: "allCounter",
+        })
     },
     methods: {
         convertDateFormat(date) {
@@ -98,7 +114,7 @@ export default {
             this.$refs.detailTableContentLimiter.scrollTo({ top: 61, behavior: 'smooth' });
         },
         async getDetailedNumbers() {
-            const res = await api.get(`numbers/${this.$route.params.id}`);
+            const res = await api.get(`numbers/${this.counterId}`);
             if (res === null)
                 this.$router.push('/landing');
             this.numbers = res;
@@ -106,8 +122,8 @@ export default {
         },
         async saveNewEntry() {
             const dateToSend = new Date(this.newDate || this.today).toISOString()
-            const res = await api.post(`numbers/${this.$route.params.id}`, {
-                id: this.$route.params.id * 1,
+            const res = await api.post(`numbers/${this.counterId}`, {
+                id: this.counterId * 1,
                 value: this.newValue,
                 date: dateToSend,
                 unit: "kWh"
@@ -120,29 +136,38 @@ export default {
             this.newDate = this.today;
         },
         async removeNumber(id) {
-            const res = await api.delete(`numbers/${this.$route.params.id}`, { id: id });
+            const res = await api.delete(`numbers/${this.counterId}`, { id: id });
             if (res === null)
                 this.$router.push('/landing');
             if (res.status === 200)
                 this.numbers = this.numbers.filter((numbers) => numbers.id !== id);
         },
     },
-    mounted() {
+    async mounted() {
+        await this.getAllCounterFromStore;
         this.getDetailedNumbers();
         this.hideAddArea();
+
     },
 }
 </script>
 
 <style lang="scss">
 .detailed {
-    padding: 0 15px;
     position: relative;
-    height: 100vh;
+    padding: 0 15px;
+    height: 100%;
 
     &_info {
         grid-column: span 2;
         grid-row: span 2;
+
+        &_wrapper {
+            display: grid;
+            height: calc(100% - 137px);
+            padding: 10px;
+            gap: 15px;
+        }
 
         &_table {
             padding: 0 20px;
@@ -151,7 +176,7 @@ export default {
 
             &_limiter {
                 overflow: auto;
-                scroll-snap-type: y proximity;
+                scroll-snap-type: y mandatory;
             }
 
             &_add {
@@ -189,6 +214,13 @@ export default {
                 }
             }
         }
+    }
+
+    h3 {
+        margin: 0;
+        padding: 10px;
+        font-size: 1.5rem;
+        font-weight: 800;
     }
 }
 </style>

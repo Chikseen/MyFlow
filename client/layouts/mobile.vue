@@ -1,7 +1,7 @@
 <template>
   <div :class="['mobileWrapper', {'mobileWrapper_setBack':isSetBack}]">
     <Footer @sthExpanded="toggleSetBack" />
-    <NuxtPage :class="[{'mobileWrapper_setBack_pages':isSetBack}]" />
+    <NuxtPage />
   </div>
 </template>
 
@@ -20,6 +20,8 @@ export default {
   methods: {
     toggleSetBack(e) {
       this.isSetBack = e;
+      if (e)
+        document.body.style.height = "calc(100% - 20px)"
     }
   },
   computed: {}
@@ -31,17 +33,14 @@ export default {
   background-color: white;
   margin: 0;
   width: 100%;
+  height: 100%;
   transition: all 0.3s;
 
   &_setBack {
-    background-color: rgb(216, 216, 216);
+    background-color: #d8d8d8;
     width: 90%;
     border-radius: 10px;
     margin: 5%;
-
-    &_pages {
-      height: calc(100vh - 20px) !important;
-    }
   }
 }
 </style>

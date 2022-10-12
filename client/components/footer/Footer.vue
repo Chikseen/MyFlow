@@ -78,12 +78,13 @@ export default {
     display: flex;
     justify-content: space-evenly;
     box-shadow: 0px 0px 7px #2e2e2e7a;
+    background-color: #fafafa;
     border-radius: 10px 10px 0 0;
 
     &_clickwrapper {
         position: fixed;
         top: 0;
-        height: 100vh;
+        height: 100%;
         left: 0;
         width: 100vw;
         background-color: #96969630;
@@ -105,6 +106,10 @@ export default {
 
     p {
         margin: 9px 0;
+    }
+
+    svg {
+        height: 40px;
     }
 }
 

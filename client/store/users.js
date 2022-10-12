@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import api from "~~/assets/helper/apiService";
 
 export const useUsersStore = defineStore({
   id: "users-store",
@@ -8,6 +9,7 @@ export const useUsersStore = defineStore({
       isUserChecked: false,
       userData: { name: null },
       isEditMode: false,
+      allCounter: null,
     };
   },
   actions: {
@@ -22,6 +24,21 @@ export const useUsersStore = defineStore({
     },
     setEditMode(value) {
       this.isEditMode = value;
+    },
+    setAllCounter(value) {
+      this.allCounter = value;
+    },
+  },
+  getters: {
+    async getAllCounter(state) {
+      if (state.allCounter != null) {
+        return state.allCounter;
+      } else {
+        const res = await api.get("numbers");
+        if (res === null) this.$router.push("/landing");
+        state.allCounter = res;
+        return res;
+      }
     },
   },
 });
