@@ -6,7 +6,8 @@ export const useUsersStore = defineStore({
     return {
       isLoginOk: false,
       isUserChecked: false,
-      userData: null,
+      userData: { name: null },
+      isEditMode: false,
     };
   },
   actions: {
@@ -18,6 +19,9 @@ export const useUsersStore = defineStore({
     },
     setUserData(value) {
       this.userData = value;
+    },
+    setEditMode(value) {
+      this.isEditMode = value;
     },
   },
 });

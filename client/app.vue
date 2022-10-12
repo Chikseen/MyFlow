@@ -39,12 +39,14 @@ export default {
 html {
   margin: 0;
   padding: 0;
+  max-height: 100vh;
 }
 
 body {
   font-family: "Merienda", Helvetica, Arial;
   margin: 0;
   padding: 0;
+  background-color: #262626ed;
 }
 
 h1,
@@ -71,4 +73,6 @@ button {
   box-shadow: 0px 0px 7px #2e2e2e7a;
   border-radius: 5px;
 }
+
+.IconBase {}
 </style>

@@ -8,7 +8,11 @@
             </div>
             <div class="overview_content">
                 <boxWrapper>
-                    <div v-for="item in allCounter" :key="item.id">
+                    <div v-for="item in allCounter" :key="item.id"
+                        :class="['overview_content_box', {'overview_content_box_shake':isEditMode}]"
+                        :style="`animation-delay: ${Math.floor(Math.random() * 200)}ms;`">
+                        <span v-if="isEditMode" class="overview_content_box_remove"
+                            @click="removeCounter(item.id)">X</span>
                         <boxSlot :data="item" @click="loadDetailed(item)" />
                     </div>
                     <boxSlot>
@@ -26,6 +30,8 @@
 
 <script>
 import api from '~~/assets/helper/apiService';
+import { mapState } from 'pinia'
+import { useUsersStore } from '~/store/users'
 
 import boxSlot from '~~/layouts/content/boxSlot.vue';
 import boxWrapper from '~~/layouts/content/boxWrapper.vue';
@@ -38,12 +44,14 @@ export default {
     data() {
         return {
             createCoutnerText: "",
-            allCounter: null
+            allCounter: null,
+            searchCounter: "",
         }
     },
     methods: {
         loadDetailed(counter) {
-            this.$router.push(`detailed/${counter.id}`)
+            if (!this.isEditMode)
+                this.$router.push(`detailed/${counter.id}`)
         },
         handleScroll(event) {
             console.log("scroll", event)
@@ -64,12 +72,19 @@ export default {
             this.allCounter = res;
         },
         async removeCounter(id) {
-            const res = await api.delete("numbers", { id: id });
-            if (res === null)
-                this.$router.push('/landing')
-            if (res.status === 200)
-                this.allCounter = this.allCounter.filter((counter) => counter.id !== id)
+            if (this.isEditMode) {
+                const res = await api.delete("numbers", { id: id });
+                if (res === null)
+                    this.$router.push('/landing')
+                if (res.status === 200)
+                    this.allCounter = this.allCounter.filter((counter) => counter.id !== id)
+            }
         },
+    },
+    computed: {
+        ...mapState(useUsersStore, {
+            isEditMode: 'isEditMode',
+        })
     },
     mounted() {
         this.getAllCounter();
@@ -89,9 +104,31 @@ export default {
         scroll-snap-align: start;
 
         &_limiter {
-            height: 80%;
+            height: calc(100% - 97px);
+            z-index: 1;
             overflow: auto;
             scroll-snap-type: y proximity;
+        }
+
+        &_box {
+            position: relative;
+
+            &_remove {
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                width: 20px;
+                height: 20px;
+                background-color: red;
+                border-radius: 5px;
+                text-align: center;
+                vertical-align: center;
+                z-index: 8;
+            }
+
+            &_shake {
+                animation: shake .2s infinite alternate linear;
+            }
         }
 
         &_filter {
@@ -112,6 +149,20 @@ export default {
                 width: 25%;
             }
         }
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: rotateZ(0deg);
+    }
+
+    0% {
+        transform: rotateZ(2deg);
+    }
+
+    100% {
+        transform: rotateZ(-2deg);
     }
 }
 </style>

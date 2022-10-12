@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="landing">
         <h1>MyFlow</h1>
         <p>Store all your monthly numbers</p>
         <NuxtLink v-if="isLoginOk" to="overview">OVERVIEW</NuxtLink>
@@ -18,3 +18,9 @@ export default {
     },
 }
 </script>
+
+<style lang="scss">
+    .landing {
+        height: 100vh;
+    }
+</style>

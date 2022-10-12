@@ -54,6 +54,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        scroll-snap-align: start;
         padding: 20px;
         height: calc(100% - 40px);
 

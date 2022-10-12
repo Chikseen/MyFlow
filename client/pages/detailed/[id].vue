@@ -137,6 +137,8 @@ export default {
 <style lang="scss">
 .detailed {
     padding: 0 15px;
+    position: relative;
+    height: 100vh;
 
     &_info {
         grid-column: span 2;
