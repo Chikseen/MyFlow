@@ -14,7 +14,7 @@
                     <UserSettings />
                 </Popup>
                 <Popup v-else-if="detailedSettingExpanded">
-                    <DetaiedSettings />
+                    <DetailedSettings />
                 </Popup>
             </Transition>
         </div>
@@ -26,7 +26,7 @@ import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 import UserSettings from "~~/components/footer/user/UserSettings.vue"
-import DetaiedSettings from "~~/components/footer/user/DetaiedSettings.vue"
+import DetailedSettings from "~~/components/footer/user/DetailedSettings.vue"
 import Popup from "~~/components/footer/Popup.vue"
 import UserIcon from "~~/assets/Icons/User-Icon.vue"
 import SettingIcon from "~~/assets/Icons/Setting-Icon.vue"
@@ -35,7 +35,7 @@ export default {
     components: {
         UserIcon,
         SettingIcon,
-        DetaiedSettings,
+        DetailedSettings,
         UserSettings,
         Popup,
     },
