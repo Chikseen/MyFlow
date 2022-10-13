@@ -5,15 +5,17 @@ public class Counter
     public String? authid { get; set; }
     public String? name { get; set; }
     public DateTime created { get; set; }
+    public String unit { get; set; }
     public NumberOverview numbers { get; set; }
 
-    public Counter(int id, String? authid, String? name, DateTime created, int numbersValue, DateTime? numbersDate, String numbersUnit)
+    public Counter(int id, String? authid, String? name, DateTime created, String unit, int numbersValue, DateTime? numbersDate)
     {
         this.id = id;
         this.authid = authid;
         this.name = name;
         this.created = created;
-        this.numbers = new NumberOverview(numbersValue, numbersDate, numbersUnit);
+        this.unit = unit;
+        this.numbers = new NumberOverview(numbersValue, numbersDate);
     }
 }
 

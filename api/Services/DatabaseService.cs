@@ -100,7 +100,8 @@ public static class DatabaseService
                                 counter (id serial, 
                                         user_id VARCHAR(255), 
                                         name VARCHAR(255), 
-                                        created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+                                        created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                        unit VARCHAR(255) DEFAULT '-',
                                         PRIMARY KEY (id), 
                                         FOREIGN KEY (user_id) REFERENCES alluser (authid) ON DELETE CASCADE);";
                 Console.WriteLine(sql);
@@ -125,7 +126,6 @@ public static class DatabaseService
                                         counter_id serial, 
                                         value VARCHAR(255), 
                                         date TIMESTAMP,
-                                        unit VARCHAR(255) DEFAULT '-',
                                         created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
                                         PRIMARY KEY (id), 
                                         FOREIGN KEY (counter_id) REFERENCES counter (id) ON DELETE CASCADE);";

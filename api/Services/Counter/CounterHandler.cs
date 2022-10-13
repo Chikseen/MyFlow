@@ -5,11 +5,11 @@ public class CounterHandler
     public Counter createNewCounter(User user, CreateCounter createCounter)
     {
         String sql = @$"
-            INSERT INTO counter(user_id, name) VALUES ('{user.authid}', '{createCounter.name}')
+            INSERT INTO counter(user_id, name, unit) VALUES ('{user.authid}', '{createCounter.name}', 'kWh')
             RETURNING *;";
         List<List<String>> data = DatabaseService.query(sql);
 
-        Counter counter = new Counter(Int32.Parse(data[0][0]), data[0][1], data[0][2], DateTime.Parse(data[0][3]), -1, null, "-");
+        Counter counter = new Counter(Int32.Parse(data[0][0]), data[0][1], data[0][2], DateTime.Parse(data[0][3]), data[0][4], -1, null);
         return counter;
     }
 
@@ -25,7 +25,7 @@ public class CounterHandler
         List<Counter> allCounter = new List<Counter>();
         for (int i = 0; i < counter.Count; i++)
         {
-            String getNumber = @$"SELECT counter_id, value, date, unit FROM numbers WHERE counter_id = '{counter[i][0]}' ORDER BY date DESC LIMIT 1;";
+            String getNumber = @$"SELECT counter_id, value, date FROM numbers WHERE counter_id = '{counter[i][0]}' ORDER BY date DESC LIMIT 1;";
             List<List<String>> numbers = DatabaseService.query(getNumber);
             if (numbers.Count > 0)
             {
@@ -39,15 +39,20 @@ public class CounterHandler
                     datearr = numbers[0][2].Split(" ")[0].Split(".");
                     date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[1]), Int32.Parse(datearr[0]));
                 }
+                else if (os == "m")
+                {
+                    datearr = numbers[0][2].Split(" ")[0].Split("/");
+                    date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[1]), Int32.Parse(datearr[0]));
+                }
                 else
                 {
                     datearr = numbers[0][2].Split(" ")[0].Split("/");
                     date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[0]), Int32.Parse(datearr[1]));
                 }
-                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), Int32.Parse(numbers[0][1]), date, numbers[0][3]));
+                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[0][4], Int32.Parse(numbers[0][1]), date));
             }
             else
-                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), -1, null, "-"));
+                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[0][4], -1, null));
         }
         return allCounter;
     }
