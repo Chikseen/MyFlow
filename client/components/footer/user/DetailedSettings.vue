@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="detailedSetting">
         <div>
             <p>Counters name: </p>
             <input type="text" v-model="newName" :placeholder="currentCounter.name">
@@ -11,12 +11,13 @@
         <button @click="updateCounter">Save</button>
         Setting
         {{currentCounter}}
+        <h6></h6>{{allCounter}}
     </div>
 </template>
 
 <script>
 import api from '~~/assets/helper/apiService';
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 export default {
@@ -29,7 +30,7 @@ export default {
     computed: {
         ...mapState(useUsersStore, {
             currentCounter: "curentCounter",
-            getAllCounter: "getAllCounter"
+            allCounter: "allCounter"
         })
     },
     methods: {
@@ -40,8 +41,12 @@ export default {
             });
             if (res === null)
                 this.$router.push('/landing');
-            this.getAllCounter;
-        }
+            this.$emit("close");
+            this.fetchAllCounter();
+        },
+        ...mapActions(useUsersStore, {
+            fetchAllCounter: "fetchAllCounter"
+        })
     },
     mounted() {
     },
@@ -49,5 +54,10 @@ export default {
 </script> 
 
 <style lang="scss">
-
+.detailedSetting {
+    input {
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+}
 </style>

@@ -13,8 +13,8 @@
                 <Popup v-if="userExpanded" @close="closeAll">
                     <UserSettings />
                 </Popup>
-                <Popup v-else-if="detailedSettingExpanded">
-                    <DetailedSettings />
+                <Popup v-else-if="detailedSettingExpanded" @close="closeAll">
+                    <DetailedSettings @close="closeAll" />
                 </Popup>
             </Transition>
         </div>

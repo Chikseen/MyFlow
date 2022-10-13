@@ -29,16 +29,26 @@ export const useUsersStore = defineStore({
     setAllCounter(value) {
       this.allCounter = value;
     },
-    setCurrentCounter(value) {
+    setCurrentCounter() {
       const router = useRoute();
       const id = router.params.id;
       if (id) this.curentCounter = this.allCounter.find((counter) => counter.id == id);
     },
+    async fetchAllCounter() {
+      this.allCounter = await api.get("numbers");
+      this.setCurrentCounter();
+    },
   },
   getters: {
     async getAllCounter(state) {
-      state.allCounter = await api.get("numbers"); // refresh
-      return state.allCounter;
+      if (state.allCounter != null) {
+        return state.allCounter;
+      } else {
+        const res = await api.get("numbers");
+        if (res === null) this.$router.push("/landing");
+        state.allCounter = res;
+        return res;
+      }
     },
   },
 });
