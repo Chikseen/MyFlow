@@ -99,4 +99,24 @@ public class CounterContoller : ControllerBase
         else
             return Unauthorized();
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Counter>> PutCounter(PutCounter counter, int id)
+    {
+        UserCookies cookies = new UserCookies(HttpContext.Request.Cookies["access_token"]!, HttpContext.Request.Cookies["auth_provider"]!);
+        User userData = await user.checkUser(cookies);
+        if (userData != null)
+        {
+            if (counterHandler.putCounter(userData, counter, id))
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        else
+            return Unauthorized();
+    }
 }

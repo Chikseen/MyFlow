@@ -8,10 +8,13 @@
             <SettingIcon class="IconBase" />
             <p>Settings</p>
         </div>
-        <div :class="isSomethingOpen ? 'footer_clickwrapper' : 'footer_clickwrapper_inactive'" @click="closeAll">
+        <div :class="isSomethingOpen ? 'footer_clickwrapper' : 'footer_clickwrapper_inactive'" @click.self="closeAll">
             <Transition name="footerSettings">
                 <Popup v-if="userExpanded" @close="closeAll">
                     <UserSettings />
+                </Popup>
+                <Popup v-else-if="detailedSettingExpanded">
+                    <DetaiedSettings />
                 </Popup>
             </Transition>
         </div>
@@ -23,6 +26,7 @@ import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 import UserSettings from "~~/components/footer/user/UserSettings.vue"
+import DetaiedSettings from "~~/components/footer/user/DetaiedSettings.vue"
 import Popup from "~~/components/footer/Popup.vue"
 import UserIcon from "~~/assets/Icons/User-Icon.vue"
 import SettingIcon from "~~/assets/Icons/Setting-Icon.vue"
@@ -31,6 +35,7 @@ export default {
     components: {
         UserIcon,
         SettingIcon,
+        DetaiedSettings,
         UserSettings,
         Popup,
     },
@@ -38,15 +43,19 @@ export default {
         return {
             userExpanded: false,
             isEditEnabled: false,
+            detailedSettingExpanded: false,
         }
     },
     methods: {
         closeAll() {
             this.userExpanded = false;
+            this.detailedSettingExpanded = false;
         },
         setMode() {
             this.isEditEnabled = !this.isEditEnabled;
             this.setEditMode(this.isEditEnabled);
+            if (this.$route.name == "detailed-id")
+                this.detailedSettingExpanded = !this.detailedSettingExpanded;
         },
         ...mapActions(useUsersStore, {
             setEditMode: 'setEditMode'
@@ -54,7 +63,7 @@ export default {
     },
     computed: {
         isSomethingOpen() {
-            const sthExpanded = this.userExpanded
+            const sthExpanded = this.userExpanded || this.detailedSettingExpanded
             this.$emit("sthExpanded", sthExpanded)
             return sthExpanded;
         },

@@ -10,6 +10,7 @@ export const useUsersStore = defineStore({
       userData: { name: null },
       isEditMode: false,
       allCounter: null,
+      curentCounter: null,
     };
   },
   actions: {
@@ -28,17 +29,16 @@ export const useUsersStore = defineStore({
     setAllCounter(value) {
       this.allCounter = value;
     },
+    setCurrentCounter(value) {
+      const router = useRoute();
+      const id = router.params.id;
+      if (id) this.curentCounter = this.allCounter.find((counter) => counter.id == id);
+    },
   },
   getters: {
     async getAllCounter(state) {
-      if (state.allCounter != null) {
-        return state.allCounter;
-      } else {
-        const res = await api.get("numbers");
-        if (res === null) this.$router.push("/landing");
-        state.allCounter = res;
-        return res;
-      }
+      state.allCounter = await api.get("numbers"); // refresh
+      return state.allCounter;
     },
   },
 });

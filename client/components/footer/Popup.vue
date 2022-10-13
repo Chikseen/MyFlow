@@ -62,8 +62,9 @@ export default {
     height: 520px;
     width: calc(100% - 20px);
     padding: 10px;
-    background-color: #ffffffc5;
-    backdrop-filter: blur(20px);
+    background-color: #fffffff0;
+    //backdrop-filter: blur(20px); // For some Reason this has a HUGE impact on performance
+
     box-shadow: 0px 0px 7px #2e2e2e7a;
     border-radius: 10px 10px 0 0;
     transition: all 0.1s;

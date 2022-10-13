@@ -28,3 +28,8 @@ public class DeleteCounter
 {
     public int id { get; set; }
 }
+public class PutCounter
+{
+    public String? unit { get; set; }
+    public String? name { get; set; }
+}

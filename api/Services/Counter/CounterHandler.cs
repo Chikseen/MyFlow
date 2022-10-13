@@ -49,10 +49,10 @@ public class CounterHandler
                     datearr = numbers[0][2].Split(" ")[0].Split("/");
                     date = new DateTime(Int32.Parse(datearr[2]), Int32.Parse(datearr[0]), Int32.Parse(datearr[1]));
                 }
-                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[0][4], Int32.Parse(numbers[0][1]), date));
+                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[i][4], Int32.Parse(numbers[0][1]), date));
             }
             else
-                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[0][4], -1, null));
+                allCounter.Add(new Counter(Int32.Parse(counter[i][0]), counter[i][1], counter[i][2], DateTime.Parse(counter[i][3]), counter[i][4], -1, null));
         }
         return allCounter;
     }
@@ -63,6 +63,24 @@ public class CounterHandler
         {
             String getIdSql = @$"DELETE FROM counter WHERE id='{id}' AND user_id = '{user.authid}';";
             List<List<String>> data = DatabaseService.query(getIdSql);
+            return true;
+        }
+        catch (System.Exception)
+        {
+            return false;
+        }
+    }
+
+    public Boolean putCounter(User user, PutCounter counter, int id)
+    {
+        try
+        {
+            String sql = @$"UPDATE counter
+                                SET name = '{counter.name}',
+                                    unit = '{counter.unit}'
+                                WHERE user_id = '{user.authid}'
+                                    AND id = '{id}'";
+            List<List<String>> data = DatabaseService.query(sql);
             return true;
         }
         catch (System.Exception)

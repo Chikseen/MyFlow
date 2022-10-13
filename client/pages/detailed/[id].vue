@@ -1,10 +1,9 @@
 <template>
     <div class="detailed">
-        <h3 @click="$router.push('/overview')">Overview > {{counterData?.name}}</h3>
+        <h3 @click="$router.push('/overview')">Overview > {{currentCounter?.name}}</h3>
         <div class="detailed_info_wrapper">
             <div class="detailed_info box-border">CHART
-                {{counterData}}
-
+                {{currentCounter}}
             </div>
             <div class="detailed_info detailed_info_table_limiter box-border" ref="detailTableContentLimiter">
                 <div class="detailed_info_table_add">
@@ -29,7 +28,7 @@
 <script>
 import api from '~~/assets/helper/apiService';
 import dates from '~~/assets/helper/dates';
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 import BoxWrapper from '~~/layouts/content/boxWrapper.vue';
@@ -53,9 +52,6 @@ export default {
         values() {
             let values = {};
             return values;
-        },
-        counterData() {
-            return this.allCounter?.filter(item => item.id == this.counterId)[0]
         },
         counterId() {
             return this.$route.params.id
@@ -101,6 +97,7 @@ export default {
             isEditMode: 'isEditMode',
             getAllCounterFromStore: 'getAllCounter',
             allCounter: "allCounter",
+            currentCounter: "curentCounter",
         })
     },
     methods: {
@@ -126,7 +123,6 @@ export default {
                 id: this.counterId * 1,
                 value: this.newValue,
                 date: dateToSend,
-                unit: "kWh"
             });
             if (res === null)
                 this.$router.push('/landing');
@@ -142,12 +138,15 @@ export default {
             if (res.status === 200)
                 this.numbers = this.numbers.filter((numbers) => numbers.id !== id);
         },
+        ...mapActions(useUsersStore, {
+            setCurrentCounter: 'setCurrentCounter'
+        }),
     },
     async mounted() {
         await this.getAllCounterFromStore;
         this.getDetailedNumbers();
         this.hideAddArea();
-
+        this.setCurrentCounter();
     },
 }
 </script>
