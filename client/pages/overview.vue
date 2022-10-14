@@ -1,6 +1,6 @@
 <template>
     <div class="overview">
-        <h1>Counter</h1>
+        <h1>MyFlow</h1>
         <div class="overview_content_limiter" ref="overviewContentLimiter">
             <div class="overview_content_filter">
                 <input type="text" v-model="searchCounter" placeholder="Search">
@@ -100,7 +100,7 @@ export default {
     padding: 0 15px;
 
     &_content {
-        height: calc(100% - 40px);
+        height: calc(100% - 10px);
         margin: 5px;
 
         &_limiter {
