@@ -53,8 +53,10 @@ export default {
             this.detailedSettingExpanded = false;
         },
         setMode() {
-            this.isEditEnabled = !this.isEditEnabled;
-            this.setEditMode(this.isEditEnabled);
+            if (this.$route.name == "overview") {
+                this.isEditEnabled = !this.isEditEnabled;
+                this.setEditMode(this.isEditEnabled);
+            }
             if (this.$route.name == "detailed-id")
                 this.detailedSettingExpanded = !this.detailedSettingExpanded;
         },

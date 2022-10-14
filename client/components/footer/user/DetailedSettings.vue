@@ -9,6 +9,9 @@
             <input type="text" v-model="newUnit" :placeholder="currentCounter.unit">
         </div>
         <button @click="updateCounter">Save</button>
+        <hr>
+        <button @click="toggleEditMode">Remove Numbers</button>
+        <hr>
         Setting
         {{currentCounter}}
         <h6></h6>{{allCounter}}
@@ -30,10 +33,15 @@ export default {
     computed: {
         ...mapState(useUsersStore, {
             currentCounter: "curentCounter",
-            allCounter: "allCounter"
+            allCounter: "allCounter",
+            isEditMode: "isEditMode"
         })
     },
     methods: {
+        toggleEditMode() {
+            this.setEditMode(!this.isEditMode);
+            this.$emit("close");
+        },
         async updateCounter() {
             const res = await api.put(`numbers/${this.currentCounter.id}`, {
                 name: this.newName || this.currentCounter.name,
@@ -45,7 +53,8 @@ export default {
             this.fetchAllCounter();
         },
         ...mapActions(useUsersStore, {
-            fetchAllCounter: "fetchAllCounter"
+            fetchAllCounter: "fetchAllCounter",
+            setEditMode: "setEditMode"
         })
     },
     mounted() {

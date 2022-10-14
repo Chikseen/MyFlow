@@ -1,9 +1,9 @@
 <template>
     <div class="detailed">
-        <h3 @click="$router.push('/overview')">Overview > {{currentCounter?.name}}</h3>
+        <h3 @click="$router.push('/overview')">&lt;- Overview: {{currentCounter?.name}}</h3>
         <div class="detailed_info_wrapper">
-            <div class="detailed_info box-border">CHART
-                {{currentCounter}}
+            <div class="detailed_info detailed_info_chart box-border">
+                <Chart :values="numbers" />
             </div>
             <div class="detailed_info detailed_info_table_limiter box-border" ref="detailTableContentLimiter">
                 <div class="detailed_info_table_add">
@@ -15,9 +15,11 @@
                     <div class="detailed_info_table_content" v-for="(number, index) in numbers" :key="index">
                         <p>
                             {{ number.value }}
-                            <span class="detailed_info_table_content_unit">{{ number.unit }}</span>
+                            <span class="detailed_info_table_content_unit">{{ currentCounter.unit }}</span>
                         </p>
                         <p>{{ convertDateFormat(number.date) }}</p>
+                        <span v-if="isEditMode" class="detailed_info_table_content_remove"
+                            @click="removeNumber(number.id)">X</span>
                     </div>
                 </div>
             </div>
@@ -32,10 +34,12 @@ import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '~/store/users'
 
 import BoxWrapper from '~~/layouts/content/boxWrapper.vue';
+import Chart from "~~/components/chart/ChartWrapper.vue"
 
 export default {
     components: {
-        BoxWrapper
+        BoxWrapper,
+        Chart,
     },
     name: "detailed",
     data() {
@@ -110,11 +114,16 @@ export default {
         hideAddArea() {
             this.$refs.detailTableContentLimiter.scrollTo({ top: 61, behavior: 'smooth' });
         },
+        sortNumbers() {
+            // is meant for diffrent sort -> Sort by (created, date, value)
+            this.numbers.sort((a, b) => new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : -1)
+        },
         async getDetailedNumbers() {
             const res = await api.get(`numbers/${this.counterId}`);
             if (res === null)
                 this.$router.push('/landing');
             this.numbers = res;
+            this.sortNumbers();
             this.hideAddArea();
         },
         async saveNewEntry() {
@@ -130,6 +139,7 @@ export default {
             this.hideAddArea();
             this.newValue = "";
             this.newDate = this.today;
+            this.sortNumbers();
         },
         async removeNumber(id) {
             const res = await api.delete(`numbers/${this.counterId}`, { id: id });
@@ -137,6 +147,7 @@ export default {
                 this.$router.push('/landing');
             if (res.status === 200)
                 this.numbers = this.numbers.filter((numbers) => numbers.id !== id);
+            this.sortNumbers();
         },
         ...mapActions(useUsersStore, {
             setCurrentCounter: 'setCurrentCounter'
@@ -198,6 +209,7 @@ export default {
             }
 
             &_content {
+                position: relative;
                 display: flex;
                 justify-content: space-between;
 
@@ -207,13 +219,32 @@ export default {
                     color: #7d7d7d;
                 }
 
+                &_remove {
+                    position: absolute;
+                    top: 7px;
+                    right: 0;
+                    width: 20px;
+                    height: 20px;
+                    background-color: red;
+                    border-radius: 5px;
+                    text-align: center;
+                    vertical-align: center;
+                }
+
                 p {
                     margin: 0;
                     padding: 10px 0;
                 }
             }
         }
+
+        &_chart {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
     }
+
 
     h3 {
         margin: 0;

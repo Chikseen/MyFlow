@@ -78,6 +78,7 @@ export default {
         },
         ...mapActions(useUsersStore, {
             setAllCounter: 'setAllCounter',
+            setEditMode: "setEditMode"
         }),
     },
     computed: {
@@ -89,6 +90,7 @@ export default {
     async mounted() {
         this.allCounter = await this.getAllCounterFromStore;
         this.$refs.overviewContentLimiter.scrollTo({ top: 40, behavior: 'smooth' });
+        this.setEditMode(false)
     },
 }
 </script>
