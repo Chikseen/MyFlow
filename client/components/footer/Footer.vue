@@ -1,7 +1,8 @@
 <template>
     <div :class="['footer', {'footer_open':isSomethingOpen}]">
         <div class="footer_selection" @click="userExpanded = !userExpanded">
-            <UserIcon class="IconBase" />
+            <img v-if="userData.pictureURI?.length" :src="userData.pictureURI" alt="Logo" class="LogoBase">
+            <UserIcon v-else class="IconBase" />
             <p>{{userData.name || "Login"}}</p>
         </div>
         <div class="footer_selection" v-if="isLoginOk" @click="setMode">
@@ -111,6 +112,7 @@ export default {
 
     &_selection {
         display: flex;
+        gap: 15px;
     }
 
     p {

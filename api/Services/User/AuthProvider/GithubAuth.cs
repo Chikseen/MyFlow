@@ -52,6 +52,6 @@ public class GithubAuth
         GithubData token = JsonConvert.DeserializeObject<GithubData>(userDataString)!;
 
         userHandler.saveUser(token.login!, token.id!, token.avatar_url!);
-        return new User(token.login!, token.id!);
+        return new User(token.login!, token.id!, token.avatar_url!);
     }
 }

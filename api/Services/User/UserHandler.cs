@@ -18,17 +18,17 @@ public class UserHandler
                     {
                         GithubAuth auth = new GithubAuth();
                         User user = await auth.getUserDataFromAT(cookies.access_token);
-                        String sql = $"SELECT name, authid FROM alluser WHERE authid = '{user.authid}'";
+                        String sql = $"SELECT name, authid, logourl FROM alluser WHERE authid = '{user.authid}'";
                         List<List<String>> data = DatabaseService.query(sql);
-                        return new User(data[0][0].ToString(), data[0][1].ToString());
+                        return new User(data[0][0], data[0][1], data[0][2]);
                     }
                 case "1":
                     {
                         GoogleAuth auth = new GoogleAuth();
                         User user = await auth.getUserDataFromAT(cookies.access_token);
-                        String sql = $"SELECT name, authid FROM alluser WHERE authid = '{user.authid}'";
+                        String sql = $"SELECT name, authid, logourl FROM alluser WHERE authid = '{user.authid}'";
                         List<List<String>> data = DatabaseService.query(sql);
-                        return new User(data[0][0].ToString(), data[0][1].ToString());
+                        return new User(data[0][0], data[0][1], data[0][2]);
                     }
                 default:
                     return null!;

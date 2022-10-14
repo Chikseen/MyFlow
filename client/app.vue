@@ -77,4 +77,9 @@ button {
 }
 
 .IconBase {}
+.LogoBase {
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px #2e2e2e86;
+  max-height: 35px;
+}
 </style>

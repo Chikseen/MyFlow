@@ -54,6 +54,6 @@ public class GoogleAuth
         GoogleData token = JsonConvert.DeserializeObject<GoogleData>(userDataString)!;
 
         userHandler.saveUser(token.given_name!, token.id!, token.picture!);
-        return new User(token.given_name!, token.id!);
+        return new User(token.given_name!, token.id!, token.picture!);
     }
 }
