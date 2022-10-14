@@ -5,11 +5,13 @@ public class GoogleAuth
 {
     private String googleClientID;
     private String googleClientSecret;
+    private String googleredirect;
     public GoogleAuth()
     {
         DotEnv.Load();
         googleClientID = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")!;
         googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")!;
+        googleredirect = Environment.GetEnvironmentVariable("GOOGLE_REDIRECT")!;
     }
 
 
@@ -22,7 +24,7 @@ public class GoogleAuth
             { "client_secret", googleClientSecret },
             { "code", code },
             { "grant_type", "authorization_code" },
-            { "redirect_uri", "http://localhost:7085/auth/google" }
+            { "redirect_uri", googleredirect }
         };
         Console.WriteLine("code: " + code);
         var content = new FormUrlEncodedContent(values);
@@ -32,12 +34,12 @@ public class GoogleAuth
 
 
         GoogleAT token = JsonConvert.DeserializeObject<GoogleAT>(responseString)!;
-        if (token.access_token == "")
+        if (token.access_token != "")
         {
             await getUserDataFromAT(token.access_token!);
             return token.access_token!;
         }
-        else return "Eroor";
+        else return "401";
     }
 
     public async Task<User> getUserDataFromAT(String access_token)
