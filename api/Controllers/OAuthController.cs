@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 [Route("auth")]
 public class OAuthContoller : ControllerBase
 {
-    private GithubAuth auth;
+    private GithubAuth githubAuth;
+    private GoogleAuth googleAuth;
     private UserHandler user;
 
     public OAuthContoller()
     {
-        auth = new GithubAuth();
+        githubAuth = new GithubAuth();
+        googleAuth = new GoogleAuth();
         user = new UserHandler();
     }
 
@@ -20,8 +22,20 @@ public class OAuthContoller : ControllerBase
         DotEnv.Load();
         String redirect = Environment.GetEnvironmentVariable("REDIRECT_AFTER_LOGIN")!;
 
-        HttpContext.Response.Cookies.Append("access_token", await auth.userLogin(code));
+        HttpContext.Response.Cookies.Append("access_token", await githubAuth.userLogin(code));
         HttpContext.Response.Cookies.Append("auth_provider", "0");
+
+        return RedirectPermanentPreserveMethod(redirect);
+    }
+
+    [HttpGet("google")]
+    public async Task<ActionResult> authGoogle(String code)
+    {
+        DotEnv.Load();
+        String redirect = Environment.GetEnvironmentVariable("REDIRECT_AFTER_LOGIN")!;
+
+        HttpContext.Response.Cookies.Append("access_token", await googleAuth.userLogin(code));
+        HttpContext.Response.Cookies.Append("auth_provider", "1");
 
         return RedirectPermanentPreserveMethod(redirect);
     }

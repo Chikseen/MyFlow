@@ -56,6 +56,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       GITHUB_CLIENT_ID: "",
+      GOOGLE_CLIENT_ID: "",
+      GOOGLE_REDIRECT_URI: "",
       API_BASE: "",
     },
   },

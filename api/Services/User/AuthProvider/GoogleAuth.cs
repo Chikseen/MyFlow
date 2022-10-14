@@ -1,0 +1,49 @@
+using dotenv.net;
+using Newtonsoft.Json;
+
+public class GoogleAuth
+{
+    private String googleClientID;
+    private String googleClientSecret;
+    public GoogleAuth()
+    {
+        DotEnv.Load();
+        googleClientID = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")!;
+        googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")!;
+    }
+
+
+    public async Task<String> userLogin(String code)
+    {
+        HttpClient accessTokenClient = new HttpClient();
+        var values = new Dictionary<string, string>
+        {
+            { "client_id", googleClientID },
+            { "client_secret", googleClientSecret },
+            { "code", code },
+            { "grant_type", "authorization_code" },
+            { "redirect_uri", "http://localhost:7085/auth/google" }
+        };
+        var content = new FormUrlEncodedContent(values);
+        var response = await accessTokenClient.PostAsync("https://oauth2.googleapis.com/token", content);
+        var responseString = await response.Content.ReadAsStringAsync();
+
+        GoogleAT token = JsonConvert.DeserializeObject<GoogleAT>(responseString)!;
+        await getUserDataFromAT(token.access_token!);
+        return token.access_token!;
+    }
+
+    public async Task<User> getUserDataFromAT(String access_token)
+    {
+        UserHandler userHandler = new UserHandler();
+        HttpClient userDataClient = new HttpClient();
+        Console.WriteLine($"https://www.googleapis.com/oauth2/v1/userinfo?access_token={access_token}");
+        var userDataResponse = await userDataClient.GetAsync($"https://www.googleapis.com/oauth2/v1/userinfo?access_token={access_token}");
+        var userDataString = await userDataResponse.Content.ReadAsStringAsync();
+        Console.WriteLine("userDataString: " + userDataString);
+        GoogleData token = JsonConvert.DeserializeObject<GoogleData>(userDataString)!;
+
+        userHandler.saveUser(token.given_name!, token.id!, token.picture!);
+        return new User(token.given_name!, token.id!);
+    }
+}

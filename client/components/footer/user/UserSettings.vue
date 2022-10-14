@@ -7,7 +7,8 @@
         <div v-else>
             <p>Sign in with: </p>
             <ul>
-                <li @click="setIsUserChecked(true)"> <a :href="githubAuth">Github Login</a> </li>
+                <li style="margin: 25px" @click="setIsUserChecked(true)"> <a :href="githubAuth">Github Login</a> </li>
+                <li style="margin: 25px" @click="setIsUserChecked(true)"> <a :href="googleAuth">Google Login</a> </li>
             </ul>
         </div>
     </div>
@@ -21,11 +22,18 @@ export default {
     data() {
         return {
             githubClientID: "",
+            googlAuth: {
+                clientID: "",
+                redirectURI: "",
+            }
         }
     },
     computed: {
         githubAuth() {
             return `https://github.com/login/oauth/authorize?client_id=${this.githubClientID}`
+        },
+        googleAuth() {
+            return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${this.googlAuth.clientID}&redirect_uri=${this.googlAuth.redirectURI}&response_type=code&scope=profile`
         },
         ...mapState(useUsersStore, {
             isLoginOk: 'isLoginOk',
@@ -49,6 +57,8 @@ export default {
     mounted() {
         const config = useRuntimeConfig();
         this.githubClientID = config.GITHUB_CLIENT_ID;
+        this.googlAuth.clientID = config.GOOGLE_CLIENT_ID;
+        this.googlAuth.redirectURI = config.GOOGLE_REDIRECT_URI;
     },
 
 }

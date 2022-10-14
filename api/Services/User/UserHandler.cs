@@ -22,6 +22,14 @@ public class UserHandler
                         List<List<String>> data = DatabaseService.query(sql);
                         return new User(data[0][0].ToString(), data[0][1].ToString());
                     }
+                case "1":
+                    {
+                        GoogleAuth auth = new GoogleAuth();
+                        User user = await auth.getUserDataFromAT(cookies.access_token);
+                        String sql = $"SELECT name, authid FROM alluser WHERE authid = '{user.authid}'";
+                        List<List<String>> data = DatabaseService.query(sql);
+                        return new User(data[0][0].ToString(), data[0][1].ToString());
+                    }
                 default:
                     return null!;
             }
