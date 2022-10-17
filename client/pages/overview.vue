@@ -8,20 +8,22 @@
             </div>
             <div class="overview_content">
                 <boxWrapper>
-                    <div v-for="item in allCounter" :key="item.id"
-                        :class="['overview_content_box', {'overview_content_box_shake':isEditMode}]"
-                        :style="`animation-delay: ${Math.floor(Math.random() * 200)}ms;`">
-                        <span v-if="isEditMode" class="overview_content_box_remove"
-                            @click="removeCounter(item.id)">X</span>
-                        <boxSlot :data="item" @click="loadDetailed(item)" />
-                    </div>
-                    <div class="overview_content_box">
-                        <boxSlot class="box_misc">
-                            <p>New Counter</p>
-                            <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
-                            <button @click="createCounter">+</button>
-                        </boxSlot>
-                    </div>
+                    <TransitionGroup name="overview" tag="div">
+                        <div v-for="item in allCounter" :key="item.id"
+                            :class="['overview_content_box', {'overview_content_box_shake':isEditMode}]"
+                            :style="`animation-delay: ${Math.floor(Math.random() * 200)}ms;`">
+                            <span v-if="isEditMode" class="overview_content_box_remove"
+                                @click="removeCounter(item.id)">X</span>
+                            <boxSlot :data="item" @click="loadDetailed(item)" style="position: relative;" />
+                        </div>
+                        <div class="overview_content_box">
+                            <boxSlot class="box_misc">
+                                <p>New Counter</p>
+                                <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
+                                <button @click="createCounter">+</button>
+                            </boxSlot>
+                        </div>
+                    </TransitionGroup>
                 </boxWrapper>
             </div>
         </div>
@@ -71,8 +73,10 @@ export default {
                 const res = await api.delete("numbers", { id: id });
                 if (res === null)
                     this.$router.push('/landing')
-                if (res.status === 200)
+                if (res.status === 200) {
+                    this.setEditMode(false);
                     this.allCounter = this.allCounter.filter((counter) => counter.id !== id)
+                }
                 this.setAllCounter(this.allCounter)
             }
         },
@@ -131,7 +135,7 @@ export default {
             }
 
             &_shake {
-                animation: shake .2s infinite alternate linear;
+                //animation: shake .2s infinite alternate linear;
             }
         }
 
@@ -169,6 +173,27 @@ export default {
         transform: rotateZ(-2deg);
     }
 }
+
+// OVERVIEW TRANSITION
+.overview-move,
+.overview-enter-active,
+.overview-leave-active {
+    transition: all 0.5s ease;
+}
+
+.overview-enter-from {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.overview-leave-to {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.overview-leave-active {
+    position: absolute;
+}
 </style>
 
 <!-- found no way for options api :thinking: -->
@@ -177,4 +202,3 @@ definePageMeta({
     middleware: 'auth'
 })
 </script>  -->
-    

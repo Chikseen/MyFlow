@@ -12,15 +12,17 @@
                     <input type="date" :value="newDate || today" @change="setNewDate">
                 </div>
                 <div class="detailed_info detailed_info_table">
-                    <div class="detailed_info_table_content" v-for="(number, index) in numbers" :key="index">
-                        <p>
-                            {{ number.value }}
-                            <span class="detailed_info_table_content_unit">{{ currentCounter.unit }}</span>
-                        </p>
-                        <p>{{ convertDateFormat(number.date) }}</p>
-                        <span v-if="isEditMode" class="detailed_info_table_content_remove"
-                            @click="removeNumber(number.id)">X</span>
-                    </div>
+                    <TransitionGroup name="values" tag="div">
+                        <div class="detailed_info_table_content" v-for="(number, index) in numbers" :key="index">
+                            <p>
+                                {{ number.value }}
+                                <span class="detailed_info_table_content_unit">{{ currentCounter.unit }}</span>
+                            </p>
+                            <p>{{ convertDateFormat(number.date) }}</p>
+                            <span v-if="isEditMode" class="detailed_info_table_content_remove"
+                                @click="removeNumber(number.id)">X</span>
+                        </div>
+                    </TransitionGroup>
                 </div>
             </div>
         </div>
@@ -60,43 +62,6 @@ export default {
         counterId() {
             return this.$route.params.id
         },
-        /* START HERE */
-        /*    values() {
-               if (this.numbers)
-                   return this.numbers.map((number) => number = number.value)
-               return null
-           },
-           dates() {
-               if (this.numbers)
-                   return this.numbers.map((number) => new Date(number = number.date).getTime())
-               return null
-           },
-           minDay() {
-               if (this.dates)
-                   return new Date(Math.min(...this.dates)).toISOString();
-               return null
-           },
-           maxDay() {
-               if (this.dates)
-                   return new Date(Math.max(...this.dates)).toISOString();
-               return null
-           },
-           daysDiff() {
-               return Math.round((new Date(this.maxDay).getTime() - new Date(this.minDay).getTime()) / (1000 * 3600 * 24));
-           }, 
-            aremeticCenter() {
-                if (this.values) {
-                    let center = 0;
-                    this.values.forEach(value => {
-                        center += value
-                    });
-                    return center / this.values.length;
-                }
-                return null
-            },
-        */
-        /* START HERE */
-        // this should be ONE obj
         ...mapState(useUsersStore, {
             isEditMode: 'isEditMode',
             getAllCounterFromStore: 'getAllCounter',
@@ -145,12 +110,15 @@ export default {
             const res = await api.delete(`numbers/${this.counterId}`, { id: id });
             if (res === null)
                 this.$router.push('/landing');
-            if (res.status === 200)
+            if (res.status === 200) {
                 this.numbers = this.numbers.filter((numbers) => numbers.id !== id);
+                this.setEditMode(false)
+            }
             this.sortNumbers();
         },
         ...mapActions(useUsersStore, {
-            setCurrentCounter: 'setCurrentCounter'
+            setCurrentCounter: 'setCurrentCounter',
+            setEditMode: "setEditMode"
         }),
     },
     async mounted() {
@@ -252,5 +220,22 @@ export default {
         font-size: 1.5rem;
         font-weight: 800;
     }
+}
+
+// VALUES TRANSITION
+.values-move,
+.values-enter-active,
+.values-leave-active {
+    transition: all 0.5s ease;
+}
+
+.values-enter-from,
+.values-leave-to {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+.values-leave-active {
+    position: absolute;
 }
 </style>

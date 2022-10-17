@@ -8,13 +8,9 @@
             <p>Counters unit: </p>
             <input type="text" v-model="newUnit" :placeholder="currentCounter.unit">
         </div>
-        <button @click="updateCounter">Save</button>
+        <button @click="updateCounter">Change</button>
         <hr>
         <button @click="toggleEditMode">Remove Numbers</button>
-        <hr>
-        Setting
-        {{currentCounter}}
-        <h6></h6>{{allCounter}}
     </div>
 </template>
 
@@ -67,6 +63,7 @@ export default {
     input {
         font-size: 1rem;
         border-radius: 5px;
+
     }
 }
 </style>

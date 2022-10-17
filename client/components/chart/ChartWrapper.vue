@@ -8,19 +8,21 @@
             <div class="chart_builder_yAxisMarks">
                 <p v-for="(item, index) in adjustedValues.marks.y" :key="index + 'a'"
                     class="chart_builder_yAxisMarks_text" :style="`top: ${item.offset}%;`">
+                <p v-if="item.markOffset">
                     {{item.value}}
+                </p>
                 </p>
             </div>
         </div>
         <div class="chart_builder_content">
-            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path :d="adjustedValues.path" stroke="#000000" stroke-width="0.5px" fill="#ffffff00" />
+            <svg class="chart_builder_content_chart" width="100%" height="100%" viewBox="0 0 100 100"
+                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path :d="adjustedValues.path" stroke="#000000" stroke-width="1px" fill="#ffffff00"
+                    shape-rendering="geometricPrecision" />
             </svg>
         </div>
         <div class="chart_builder">
             <div class="chart_builder_zero">
-                <p> 0 </p>
             </div>
         </div>
         <div class="chart_builder">
@@ -72,10 +74,24 @@ export default {
                 const min = Math.min(...base.map(x => x.value))
 
                 let yMarks = [];
-                base.forEach((value) => yMarks.push({
-                    offset: 100 - Math.round(((value.value - min) / (max - min) * 100)),
-                    value: value.value
-                }));
+                base.forEach((value, i) => {
+                    const offset = 100 - Math.round(((value.value - min) / (max - min) * 100));
+                    let markOffset = true;
+                    //The height of the div should be also considerd
+                    if (i > 0) {
+                        const valueBefore = 100 - Math.round(((base[i - 1].value - min) / (max - min) * 100));
+                        if (valueBefore - offset < 10) {
+                            markOffset = false;
+                        }
+                    }
+
+                    yMarks.push
+                        ({
+                            offset: offset,
+                            markOffset: markOffset,
+                            value: value.value
+                        })
+                });
 
                 // CALC MARKS
                 //   X
@@ -136,12 +152,14 @@ export default {
         &_content {
             position: relative;
 
-            svg {
+            &_chart {
                 position: absolute;
-                top: 0;
+                bottom: 0;
                 left: 0;
-                height: 100%;
-                width: 100%;
+                width: calc(100% - 40px);
+                height: calc(100% - 27px);
+                display: flex;
+                transition: all 1s ease-in-out;
             }
         }
 
@@ -155,7 +173,7 @@ export default {
             &_text {
                 position: absolute;
                 top: 0;
-                right: 0;
+                right: 2px;
             }
         }
 
@@ -165,7 +183,7 @@ export default {
 
             &_text {
                 position: absolute;
-                top: 0;
+                top: 2px;
                 right: 0;
                 text-align: left !important;
             }

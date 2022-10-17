@@ -58,7 +58,7 @@ h2 {
 
 input {
   width: 90%;
-  padding: 0;
+  padding: 2px;
   border: 0.1px rgb(135, 135, 135) solid;
   border-radius: 25px;
 }
