@@ -7,7 +7,7 @@
             </div>
             <div class="chart_builder_yAxisMarks">
                 <p v-for="(item, index) in adjustedValues.marks.y" :key="index + 'a'"
-                    class="chart_builder_yAxisMarks_text" :style="`top: ${item.offset}%;`">
+                    class="chart_builder_yAxisMarks_text" :style="`top: ${item.offset}px;`">
                 <p v-if="item.markOffset">
                     {{item.value}}
                 </p>
@@ -92,7 +92,6 @@ export default {
                 base.forEach((value, i) => {
                     const offset = chartYMax - Math.round(((value.value - min) / (max - min) * chartYMax));
                     let markOffset = true;
-                    //The height of the div should be also considerd
                     if (i > 0) {
                         const valueBefore = chartYMax - Math.round(((base[i - 1].value - min) / (max - min) * chartYMax));
                         if (valueBefore - offset < 10) {

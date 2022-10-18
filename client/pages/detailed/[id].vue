@@ -142,6 +142,7 @@ export default {
 
         &_wrapper {
             display: grid;
+            grid-template-rows: 20% 20% 20% 20%;
             height: calc(100% - 137px);
             padding: 10px;
             gap: 15px;
