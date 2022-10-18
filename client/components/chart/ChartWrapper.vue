@@ -15,8 +15,9 @@
             </div>
         </div>
         <div class="chart_builder_content">
-            <svg class="chart_builder_content_chart" width="100%" height="100%" viewBox="0 0 100 100"
-                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="chart_builder_content_chart" width="100%" height="100%"
+                :viewBox="`0 0 ${svgProbertys.width + 1} ${svgProbertys.height + 1}`" ref="chartsvg"
+                xmlns="http://www.w3.org/2000/svg">
                 <path :d="adjustedValues.path" stroke="#000000" stroke-width="1px" fill="#ffffff00"
                     shape-rendering="geometricPrecision" />
             </svg>
@@ -48,9 +49,22 @@ export default {
         values: { type: Object, default: null }
     },
     data() {
-        return {}
+        return {
+            svgProbertys: {
+                width: 100,
+                height: 100,
+            },
+            svgCheckerTimer: null,
+        }
     },
-    methods: {},
+    methods: {
+        checkSvgProbertys() {
+            if (this.$refs.chartsvg && (this.$refs.chartsvg.clientWidth && this.$refs.chartsvg.clientHeight)) {
+                this.svgProbertys.width = this.$refs.chartsvg.clientWidth
+                this.svgProbertys.height = this.$refs.chartsvg.clientHeight
+            }
+        },
+    },
     computed: {
         adjustedValues() {
             if (this.values?.length > 0) {
@@ -72,14 +86,15 @@ export default {
                 //   Y
                 const max = Math.max(...base.map(x => x.value))
                 const min = Math.min(...base.map(x => x.value))
+                const chartYMax = this.svgProbertys.height
 
                 let yMarks = [];
                 base.forEach((value, i) => {
-                    const offset = 100 - Math.round(((value.value - min) / (max - min) * 100));
+                    const offset = chartYMax - Math.round(((value.value - min) / (max - min) * chartYMax));
                     let markOffset = true;
                     //The height of the div should be also considerd
                     if (i > 0) {
-                        const valueBefore = 100 - Math.round(((base[i - 1].value - min) / (max - min) * 100));
+                        const valueBefore = chartYMax - Math.round(((base[i - 1].value - min) / (max - min) * chartYMax));
                         if (valueBefore - offset < 10) {
                             markOffset = false;
                         }
@@ -95,6 +110,7 @@ export default {
 
                 // CALC MARKS
                 //   X
+                const chartXMax = this.svgProbertys.width
                 let xMarks = [];
                 xMarks.push({
                     offset: 0,
@@ -113,8 +129,8 @@ export default {
                     yMarks.forEach((mark, i) => {
                         if (i != 0) { // just to prevent "M0 100 L 0 100"
                             const date = new Date(base[i].date).getTime();
-                            const step = 100 - (date - minDate) / (maxDate - minDate) * 100;
-                            path += ` L ${100 - step} ${mark.offset}`
+                            const step = chartXMax - (date - minDate) / (maxDate - minDate) * chartXMax;
+                            path += ` L ${chartXMax - step} ${mark.offset}`
                         }
                     });
                 }
@@ -132,7 +148,14 @@ export default {
             return null
         },
     },
-    mounted() { },
+    mounted() {
+        this.svgCheckerTimer = setInterval(() => {
+            this.checkSvgProbertys();
+        }, 50);
+    },
+    beforeDestroy() {
+        clearInterval(this.t)
+    },
 }
 </script>
 
@@ -159,7 +182,7 @@ export default {
                 width: calc(100% - 40px);
                 height: calc(100% - 27px);
                 display: flex;
-                transition: all 1s ease-in-out;
+                transition: all 1s;
             }
         }
 
