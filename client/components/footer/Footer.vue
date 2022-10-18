@@ -6,7 +6,7 @@
             <p>{{userData.name || "Login"}}</p>
         </div>
         <div class="footer_selection" v-if="isLoginOk" @click="setMode">
-            <SettingIcon class="IconBase" />
+            <SettingIcon class="IconBase footer_icon_setting" />
             <p>Settings</p>
         </div>
         <div :class="isSomethingOpen ? 'footer_clickwrapper' : 'footer_clickwrapper_inactive'" @click.self="closeAll">
@@ -115,6 +115,12 @@ export default {
     &_selection {
         display: flex;
         gap: 15px;
+    }
+
+    &_icon {
+        &_setting {
+            width: 35px;
+        }
     }
 
     p {

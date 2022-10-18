@@ -2,21 +2,30 @@
     <div class="overview">
         <h1>MyFlow</h1>
         <div class="overview_content_limiter" ref="overviewContentLimiter">
-            <div class="overview_content_filter">
-                <input type="text" v-model="searchCounter" placeholder="Search">
-                <button>Sort</button>
+            <div :class="['overview_content_filter', {'overview_content_filter_expanded': isSortExpanded}]">
+                <input type="text" v-model="searchCounter" placeholder="Search" @focus="isSortExpanded = false">
+                <button @click="isSortExpanded = true">
+                    <Transition name="filterButtons" mode="out-in">
+                        <div v-if="isSortExpanded" class="overview_content_filter_expanded_buttons">
+                            <button @click="sortBy = 'date'">Date</button>
+                            <button @click="sortBy = 'value'">Value</button>
+                            <button @click="sortBy = 'name'">Name</button>
+                        </div>
+                        <p v-else>Sort</p>
+                    </Transition>
+                </button>
             </div>
             <div class="overview_content">
                 <boxWrapper>
                     <TransitionGroup name="overview" tag="div">
-                        <div v-for="item in allCounter" :key="item.id"
+                        <div v-for="item in filterdCounter" :key="item.id"
                             :class="['overview_content_box', {'overview_content_box_shake':isEditMode}]"
                             :style="`animation-delay: ${Math.floor(Math.random() * 200)}ms;`">
                             <span v-if="isEditMode" class="overview_content_box_remove"
                                 @click="removeCounter(item.id)">X</span>
                             <boxSlot :data="item" @click="loadDetailed(item)" style="position: relative;" />
                         </div>
-                        <div class="overview_content_box">
+                        <div class="overview_content_box" key="overviewAdd">
                             <boxSlot class="box_misc">
                                 <p>New Counter</p>
                                 <input type="text" v-model="createCoutnerText" @keyup.enter="createCounter">
@@ -47,7 +56,9 @@ export default {
         return {
             createCoutnerText: "",
             allCounter: null,
-            searchCounter: "",
+            searchCounter: " ",
+            isSortExpanded: false,
+            sortBy: "date"
         }
     },
     methods: {
@@ -86,6 +97,25 @@ export default {
         }),
     },
     computed: {
+        filterdCounter() {
+            let filtered = this.allCounter
+            if (filtered) {
+                if (this.searchCounter != "")
+                    filtered = this.allCounter.filter((item) => (item.name).toLowerCase().match((this.searchCounter.trim()).toLowerCase()))
+
+                if (this.sortBy === "date")
+                    filtered.sort((a, b) => new Date(a.numbers.date).getTime() < new Date(b.numbers.date).getTime() ? 1 : -1)
+                else if (this.sortBy === "name")
+                    filtered.sort((a, b) => (a.name).toLowerCase() > (b.name).toLowerCase() ? 1 : -1)
+                else
+                    filtered.sort((a, b) => a.numbers.value - b.numbers.value)
+
+                return filtered
+            }
+            return null
+
+
+        },
         ...mapState(useUsersStore, {
             isEditMode: 'isEditMode',
             getAllCounterFromStore: 'getAllCounter',
@@ -96,6 +126,12 @@ export default {
         this.$refs.overviewContentLimiter.scrollTo({ top: 40, behavior: 'smooth' });
         this.setEditMode(false)
     },
+    watch: {
+        searchCounter(e) {
+            if (e == "") // empty string is not allowed because is destroyed the animations for whatever reason
+                this.searchCounter = " ";
+        }
+    }
 }
 </script>
     
@@ -147,14 +183,40 @@ export default {
             padding: 10px 15px;
             scroll-snap-align: start;
 
+            &_expanded {
+                &_buttons {
+                    display: flex;
+
+                    button {
+                        height: 100%;
+                    }
+                }
+
+                input {
+                    flex-basis: 5% !important;
+                }
+
+                button {
+                    flex-basis: 95% !important;
+                }
+            }
+
             input {
-                width: 75%;
+                width: 100%;
                 border: 0.1px rgb(135, 135, 135) solid;
                 font-size: 1.1rem;
+                flex-basis: 75%;
+                transition: all 0.5s;
             }
 
             button {
-                width: 25%;
+                width: 100%;
+                flex-basis: 25%;
+                transition: all 0.5s;
+            }
+
+            p {
+                margin: auto;
             }
         }
     }
@@ -174,7 +236,18 @@ export default {
     }
 }
 
-// OVERVIEW TRANSITION
+// FILTER
+.filterButtons-enter-active,
+.filterButtons-leave-active {
+    transition: opacity 0.25s ease;
+}
+
+.filterButtons-enter-from,
+.filterButtons-leave-to {
+    opacity: 0;
+}
+
+// OVERVIEW
 .overview-move,
 .overview-enter-active,
 .overview-leave-active {
