@@ -13,7 +13,7 @@
                 </div>
                 <div class="detailed_info detailed_info_table">
                     <TransitionGroup name="values" tag="div">
-                        <div class="detailed_info_table_content" v-for="(number, index) in numbers" :key="index">
+                        <div class="detailed_info_table_content" v-for="(number, index) in valuesForTable" :key="index">
                             <p>
                                 {{ number.value }}
                                 <span class="detailed_info_table_content_unit">{{ currentCounter.unit }}</span>
@@ -61,6 +61,13 @@ export default {
         },
         counterId() {
             return this.$route.params.id
+        },
+        valuesForTable() {
+            if (this.numbers) {
+                const numbers = [...this.numbers]
+                return numbers.reverse();
+            }
+            return null
         },
         ...mapState(useUsersStore, {
             isEditMode: 'isEditMode',
