@@ -21,6 +21,9 @@
                 <path :d="adjustedValues.path" stroke="#000000" stroke-width="1px" fill="#ffffff00"
                     shape-rendering="geometricPrecision" />
             </svg>
+            <span class="chart_builder_content_chart_dots" v-for="(item, index) in adjustedValues.dots" :key="index"
+                :style="`top: ${item.y}px; left: ${item.x}px;`" @click="setGraphInfo(item)"></span>
+            {{showInfo}}
         </div>
         <div class="chart_builder">
             <div class="chart_builder_zero">
@@ -43,6 +46,8 @@
 
 <script>
 import dates from "~~/assets/helper/dates"
+import { mapState } from 'pinia'
+import { useUsersStore } from '~/store/users'
 
 export default {
     props: {
@@ -55,6 +60,7 @@ export default {
                 height: 100,
             },
             svgCheckerTimer: null,
+            showInfo: null
         }
     },
     methods: {
@@ -64,13 +70,17 @@ export default {
                 this.svgProbertys.height = this.$refs.chartsvg.clientHeight
             }
         },
+        setGraphInfo(item) {
+            this.showInfo = `${item.value} ${this.currentCounter.unit} : ${dates.ISOstringToDDMMYYYY(item.date)}`
+        }
     },
     computed: {
         adjustedValues() {
             if (this.values?.length > 0) {
                 // CALC BASE DATA
                 let base = [];
-                const timeOffset = new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+                const timeOffset = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+                const chartYMax = this.svgProbertys.height
 
                 this.values.forEach(value => {
                     base.push({
@@ -82,12 +92,13 @@ export default {
                 base = base.filter(item => new Date(item.date) > timeOffset
                 )
 
+                const max = Math.max(...base.map(x => x.value));
+                const min = Math.min(...base.map(x => x.value));
+                const maxDate = Math.max(...base.map(x => new Date(x.date).getTime()));
+                const minDate = Math.min(...base.map(x => new Date(x.date).getTime()));
+
                 // CALC MARKS
                 //   Y
-                const max = Math.max(...base.map(x => x.value))
-                const min = Math.min(...base.map(x => x.value))
-                const chartYMax = this.svgProbertys.height
-
                 let yMarks = [];
                 base.forEach((value, i) => {
                     const offset = chartYMax - Math.round(((value.value - min) / (max - min) * chartYMax));
@@ -123,8 +134,6 @@ export default {
                 // CALC PATHING
                 let path = `M 0 ${yMarks[0].offset || 0}`;
                 if (yMarks.length > 1) {
-                    const maxDate = Math.max(...base.map(x => new Date(x.date).getTime()));
-                    const minDate = Math.min(...base.map(x => new Date(x.date).getTime()));
                     yMarks.forEach((mark, i) => {
                         if (i != 0) { // just to prevent "M0 100 L 0 100"
                             const date = new Date(base[i].date).getTime();
@@ -135,17 +144,38 @@ export default {
                 }
 
 
+                // DOTS
+                let dots = [];
+                yMarks.forEach((mark, i) => {
+                    const date = new Date(base[i].date).getTime();
+                    const step = (chartXMax - (date - minDate) / (maxDate - minDate) * chartXMax) + 5;
+                    dots.push({
+                        x: chartXMax - step,
+                        y: (mark.offset + 23),
+                        value: base[i].value,
+                        date: base[i].date,
+                    })
+                });
+
+                console.log(dots)
+
+
+
                 return {
                     main: base,
+                    dots: dots,
+                    path: path || "M 0 100L 12 47L 33 53L 100 0",
                     marks: {
                         y: yMarks,
                         x: xMarks,
                     },
-                    path: path || "M 0 100L 12 47L 33 53L 100 0"
                 }
             }
             return null
         },
+        ...mapState(useUsersStore, {
+            currentCounter: "curentCounter",
+        })
     },
     mounted() {
         this.svgCheckerTimer = setInterval(() => {
@@ -182,6 +212,18 @@ export default {
                 height: calc(100% - 27px);
                 display: flex;
                 transition: all 1s;
+
+                &_dots {
+                    content: "";
+                    position: absolute;
+                    width: 7px;
+                    height: 7px;
+                    background-color: #ffffff;
+                    border-radius: 5px;
+                    border: 1px solid #0b0b0b;
+                    z-index: 5;
+                    transition: all 0.1s;
+                }
             }
         }
 
