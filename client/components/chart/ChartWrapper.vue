@@ -17,13 +17,16 @@
         <div class="chart_builder_content">
             <svg class="chart_builder_content_chart" width="100%" height="100%"
                 :viewBox="`0 0 ${svgProbertys.width + 1} ${svgProbertys.height + 1}`" ref="chartsvg"
-                xmlns="http://www.w3.org/2000/svg">
+                xmlns="http://www.w3.org/2000/svg" @mouseup="setGraphInfo">
                 <path :d="adjustedValues.path" stroke="#000000" stroke-width="1px" fill="#ffffff00"
                     shape-rendering="geometricPrecision" />
             </svg>
             <span class="chart_builder_content_chart_dots" v-for="(item, index) in adjustedValues.dots" :key="index"
-                :style="`top: ${item.y}px; left: ${item.x}px;`" @click="setGraphInfo(item)"></span>
-            {{showInfo}}
+                :style="`top: ${item.y}px; left: ${item.x}px;`">
+                <p class="chart_builder_content_chart_text" v-if="index == showInfo?.id">{{showInfo.value}}
+                    {{this.currentCounter.unit}} :
+                    {{convertDate(showInfo.date)}}</p>
+            </span>
         </div>
         <div class="chart_builder">
             <div class="chart_builder_zero">
@@ -64,14 +67,29 @@ export default {
         }
     },
     methods: {
+        convertDate(date) {
+            return dates.ISOstringToDDMMYYYY(date)
+        },
         checkSvgProbertys() {
             if (this.$refs.chartsvg && (this.$refs.chartsvg.clientWidth && this.$refs.chartsvg.clientHeight)) {
                 this.svgProbertys.width = this.$refs.chartsvg.clientWidth
                 this.svgProbertys.height = this.$refs.chartsvg.clientHeight
             }
         },
-        setGraphInfo(item) {
-            this.showInfo = `${item.value} ${this.currentCounter.unit} : ${dates.ISOstringToDDMMYYYY(item.date)}`
+        setGraphInfo(click) {
+            const allDots = [...this.adjustedValues.dots];
+            let nearestDot = null;
+            let shortestDistance = 0;
+
+            allDots.forEach((dot, i) => {
+                const distance = Math.sqrt(Math.pow(Math.abs(dot.y - click.offsetY), 2) + Math.pow(Math.abs(dot.x - click.offsetX), 2));
+                dot.id = i;
+                if (distance < shortestDistance || !nearestDot) {
+                    nearestDot = dot;
+                    shortestDistance = distance;
+                }
+            })
+            this.showInfo = nearestDot;
         }
     },
     computed: {
@@ -143,7 +161,6 @@ export default {
                     });
                 }
 
-
                 // DOTS
                 let dots = [];
                 yMarks.forEach((mark, i) => {
@@ -156,10 +173,6 @@ export default {
                         date: base[i].date,
                     })
                 });
-
-                console.log(dots)
-
-
 
                 return {
                     main: base,
@@ -216,13 +229,33 @@ export default {
                 &_dots {
                     content: "";
                     position: absolute;
+                    display: flex;
+                    justify-content: center;
                     width: 7px;
                     height: 7px;
                     background-color: #ffffff;
                     border-radius: 5px;
                     border: 1px solid #0b0b0b;
+                    align-content: center;
                     z-index: 5;
-                    transition: all 0.1s;
+                    transition: all 0.08s;
+                }
+
+                &_text {
+                    position: absolute;
+                    top: -30px;
+                    font-size: 0.8rem;
+                    background-color: white;
+                    border: 0.1px solid #ffffff;
+                    border-radius: 5px;
+                    box-shadow: 0px 0px 7px #2e2e2e7a;
+                    white-space: nowrap;
+                    text-align: center;
+                    margin: 0;
+                    padding: 3px;
+                    margin-left: -100%;
+                    margin-right: -100%;
+                    z-index: 10;
                 }
             }
         }

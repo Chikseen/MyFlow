@@ -140,6 +140,7 @@ export default {
 <style lang="scss">
 .detailed {
     position: relative;
+    overflow: hidden;
     padding: 0 15px;
     height: 100%;
 
