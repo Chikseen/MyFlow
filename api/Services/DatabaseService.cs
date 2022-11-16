@@ -141,6 +141,25 @@ public static class DatabaseService
                 return "error_creating_counter";
             }
             con.Close();
+
+
+            // __________ CHANGE TYPE OF COLUMNS __________
+            try
+            {
+                con.Open();
+                var sql = @"ALTER TABLE numbers ALTER COLUMN date TYPE VARCHAR;";
+                Console.WriteLine(sql);
+                NpgsqlCommand command = new NpgsqlCommand(sql, con);
+                NpgsqlDataReader dr = command.ExecuteReader();
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("Error While changing type of numbers - date to VARCHAR");
+                Console.WriteLine(e);
+                con.Close();
+                return "";
+            }
+            con.Close();
         }
         return "success";
     }
